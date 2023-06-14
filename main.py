@@ -1,6 +1,8 @@
 import pygame as pg
 
 pg.init()
+clock = pg.time.Clock()
+
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -38,8 +40,9 @@ while run:
     player.main_player_movement()
 
     player.animate()
-
     player.draw(screen)
+    pg.display.flip()
+    clock.tick(60)
 
 
     #this part of code is responsible for boundries
@@ -47,7 +50,7 @@ while run:
         player.player_rect.left = BOUNDRY_LEFT
     if player.player_rect.right > BOUNDRY_RIGHT:
         player.player_rect.right = BOUNDRY_RIGHT 
-    if player.player_rect.top < BOUNDRY_TOP and player.player_rect.left < SCREEN_WIDTH - 200 :
+    if player.player_rect.top < BOUNDRY_TOP:
         player.player_rect.top = BOUNDRY_TOP 
     if player.player_rect.bottom > BOUNDRY_BOTTOM:
        player.player_rect.bottom = BOUNDRY_BOTTOM
