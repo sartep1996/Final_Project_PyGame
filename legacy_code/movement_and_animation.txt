@@ -1,0 +1,21 @@
+   #this part is responsible for switching between two images
+    def draw(self, screen):    
+        if self.is_player_image:
+            screen.blit(self.player_image_still, self.player_rect)
+        elif self.animation_timer >= self.animation_delay // 2:
+            screen.blit(self.player_image_2, self.player_rect)
+        else:
+            screen.blit(self.player_image_1, self.player_rect)
+
+
+
+    def animate(self):
+        current_time = time.time()
+        delta_time = current_time - self.last_frame_time
+        self.last_frame_time = current_time
+
+        if not self.is_player_image and self.last_moved:
+            self.animation_timer += delta_time * 700
+            if self.animation_timer >= self.animation_delay:
+                self.animation_timer = 0
+                self.is_player_image = True

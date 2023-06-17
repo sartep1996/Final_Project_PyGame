@@ -10,7 +10,7 @@ BOUNDRY_LEFT = 25
 BOUNDRY_TOP = 25
 BOUNDRY_RIGHT = SCREEN_WIDTH - 25
 BOUNDRY_BOTTOM = SCREEN_HEIGHT - 25
-#creates a game scree
+#creates a game screen
 screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #background image
@@ -22,30 +22,15 @@ from player_movement import player
 
 run = True
 while run:
+    clock.tick(60)
 
-    #black screen fill for default, all images are on top of it
-    screen.fill((0, 0, 0))
-    #adding background of level 1
-    screen.blit(background_lvl_1, (0,0))
-   
-    # pg.draw.rect(screen, (255, 0, 0), player_rect)
-    screen.blit(player.player_image_1, player.player_rect)
-    sprite_surface = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-   
     for event in pg.event.get():
         if event.type == pg.QUIT:
             run = False
 
     player.main_player_movement()
-
     player.animate()
-    player.draw(screen)
-    pg.display.flip()
-    clock.tick(60)
 
-
-    #this part of code is responsible for boundries
     if player.player_rect.left < BOUNDRY_LEFT:
         player.player_rect.left = BOUNDRY_LEFT
     if player.player_rect.right > BOUNDRY_RIGHT:
@@ -55,8 +40,20 @@ while run:
     if player.player_rect.bottom > BOUNDRY_BOTTOM:
        player.player_rect.bottom = BOUNDRY_BOTTOM
 
+    #black screen fill for default, all images are on top of it
+    screen.fill((0, 0, 0))
+    #adding background of level 1
+    screen.blit(background_lvl_1, (0,0))
+   
+    
+    player.draw(screen)
 
-
+   
+    
     pg.display.update()
+
+
+    #this part of code is responsible for boundries
+    # pg.display.update()
 
 pg.quit()
