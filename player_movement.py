@@ -3,7 +3,7 @@ import time
 
 #test player
 class Player(pg.sprite.Sprite):
-    def __init__(self, player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, position ):
+    def __init__(self, player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, position ):
         super().__init__()
         self.player_still_raw = pg.image.load(player_image_path_raw).convert_alpha()
 
@@ -43,23 +43,61 @@ class Player(pg.sprite.Sprite):
         self.player_image_right_2 = pg.transform.scale(self.player_image_right_2_raw, (100, 100))
 
 
+        #This is forplayer moving downright
+
+        self.player_image_downright_still_raw = pg.image.load(player_image_path_raw_downright).convert_alpha()
+        self.player_image_downright_1_raw = pg.image.load(player_image_downright_path_1).convert_alpha()
+        self.player_image_downright_2_raw = pg.image.load(player_image_downright_path_2).convert_alpha()
+        
+        self.player_image_downright_still = pg.transform.scale(self.player_image_downright_still_raw, (100, 100))
+        self.player_image_downright_1 = pg.transform.scale(self.player_image_downright_1_raw, (100, 100))
+        self.player_image_downright_2 = pg.transform.scale(self.player_image_downright_2_raw, (100, 100))
 
 
+        #This is forplayer moving downleft
+
+        self.player_image_downleft_still_raw = pg.image.load(player_image_path_raw_downleft).convert_alpha()
+        self.player_image_downleft_1_raw = pg.image.load(player_image_downleft_path_1).convert_alpha()
+        self.player_image_downleft_2_raw = pg.image.load(player_image_downleft_path_2).convert_alpha()
+        
+        self.player_image_downleft_still = pg.transform.scale(self.player_image_downleft_still_raw, (100, 100))
+        self.player_image_downleft_1 = pg.transform.scale(self.player_image_downleft_1_raw, (100, 100))
+        self.player_image_downleft_2 = pg.transform.scale(self.player_image_downleft_2_raw, (100, 100))
+
+        
+        #This is forplayer moving upleft
+
+        self.player_image_upleft_still_raw = pg.image.load(player_image_path_raw_upleft).convert_alpha()
+        self.player_image_upleft_1_raw = pg.image.load(player_image_upleft_path_1).convert_alpha()
+        self.player_image_upleft_2_raw = pg.image.load(player_image_upleft_path_2).convert_alpha()
+        
+        self.player_image_upleft_still = pg.transform.scale(self.player_image_upleft_still_raw, (100, 100))
+        self.player_image_upleft_1 = pg.transform.scale(self.player_image_upleft_1_raw, (100, 100))
+        self.player_image_upleft_2 = pg.transform.scale(self.player_image_upleft_2_raw, (100, 100))
 
 
+         #This is forplayer moving upright
 
+        self.player_image_upright_still_raw = pg.image.load(player_image_path_raw_upright).convert_alpha()
+        self.player_image_upright_1_raw = pg.image.load(player_image_upright_path_1).convert_alpha()
+        self.player_image_upright_2_raw = pg.image.load(player_image_upright_path_2).convert_alpha()
+        
+        self.player_image_upright_still = pg.transform.scale(self.player_image_upright_still_raw, (100, 100))
+        self.player_image_upright_1 = pg.transform.scale(self.player_image_upright_1_raw, (100, 100))
+        self.player_image_upright_2 = pg.transform.scale(self.player_image_upright_2_raw, (100, 100))
+
+
+        # The rest of the charackteristics
         self.player_rect = self.player_image_still.get_rect()
         self.player_rect.topleft = position #sets initial position
         self.is_player_image = True
         self.animation_timer = 0
-        self.animation_delay = 200
+        self.animation_delay = 350
         self.movement_speed = 5
         self.last_moved = ''
         self.last_frame_time = time.time()
     
 
-
-  
 
     def draw(self, screen):
 
@@ -70,6 +108,15 @@ class Player(pg.sprite.Sprite):
                 screen.blit(self.player_image_2, self.player_rect)
             else:
                 screen.blit(self.player_image_1, self.player_rect)
+
+        elif self.last_moved == 'downright':
+            if self.is_player_image:
+                screen.blit(self.player_image_downright_still, self.player_rect)
+            elif self.animation_timer >= self.animation_delay // 2:
+                screen.blit(self.player_image_downright_1, self.player_rect)
+            else:
+                screen.blit(self.player_image_downright_2, self.player_rect)
+
         
         elif self.last_moved == 'up':
             if self.is_player_image:
@@ -79,6 +126,15 @@ class Player(pg.sprite.Sprite):
             else:
                 screen.blit(self.player_image_up_1, self.player_rect)
 
+        
+        elif self.last_moved == 'upleft':
+            if self.is_player_image:
+                screen.blit(self.player_image_upright_still, self.player_rect)
+            elif self.animation_timer >= self.animation_delay // 2:
+                screen.blit(self.player_image_upright_1, self.player_rect)
+            else:
+                screen.blit(self.player_image_upright_2, self.player_rect)
+
         elif self.last_moved == 'left':
             if self.is_player_image:
                 screen.blit(self.player_image_left_still, self.player_rect)
@@ -86,6 +142,14 @@ class Player(pg.sprite.Sprite):
                 screen.blit(self.player_image_left_2, self.player_rect)
             else:
                 screen.blit(self.player_image_left_1, self.player_rect)
+
+        elif self.last_moved == 'upright':
+            if self.is_player_image:
+                screen.blit(self.player_image_upleft_still, self.player_rect)
+            elif self.animation_timer >= self.animation_delay // 2:
+                screen.blit(self.player_image_upleft_1, self.player_rect)
+            else:
+                screen.blit(self.player_image_upleft_2, self.player_rect)
 
         elif self.last_moved == 'right':
             if self.is_player_image:
@@ -95,10 +159,16 @@ class Player(pg.sprite.Sprite):
             else:
                 screen.blit(self.player_image_right_1, self.player_rect)
 
+        elif self.last_moved == 'downleft':
+            if self.is_player_image:
+                screen.blit(self.player_image_downleft_still, self.player_rect)
+            elif self.animation_timer >= self.animation_delay // 2:
+                screen.blit(self.player_image_downleft_1, self.player_rect)
+            else:
+                screen.blit(self.player_image_downleft_2, self.player_rect)
+
         elif self.is_player_image:
                 screen.blit(self.player_image_still, self.player_rect)
-
-
 
 
 
@@ -106,27 +176,52 @@ class Player(pg.sprite.Sprite):
     def main_player_movement(self):
         key = pg.key.get_pressed()
         if key[pg.K_a]:
-            self.player_rect.move_ip(-self.movement_speed, 0)
-            self.is_player_image = False
-            self.last_moved = 'left'
-        else:
-            self.is_player_image = True
-        
-        if key[pg.K_d]:
-            self.player_rect.move_ip(self.movement_speed, 0)
-            self.is_player_image = False
-            self.last_moved = 'right'
-        if key[pg.K_w]:
+            if key[pg.K_w]:
+                diagonal_speed = self.movement_speed / 1.414
+                self.player_rect.move_ip(-diagonal_speed, -diagonal_speed)
+                self.is_player_image = False
+                self.last_moved= 'upleft'
+            
+            elif key[pg.K_s]:
+                diagonal_speed = self.movement_speed / 1.414
+                self.player_rect.move_ip(-diagonal_speed, diagonal_speed)
+                self.is_player_image = False
+                self.last_moved= 'downleft'
+            else:
+                self.player_rect.move_ip(-self.movement_speed, 0)
+                self.is_player_image = False
+                self.last_moved = 'left'
+       
+        elif key[pg.K_d]:
+            if key[pg.K_w]:
+                diagonal_speed = self.movement_speed / 1.414
+                self.player_rect.move_ip(diagonal_speed, -diagonal_speed)
+                self.is_player_image = False
+                self.last_moved = 'upright'
+            elif key[pg.K_s]:
+                diagonal_speed = self.movement_speed / 1.414
+                self.player_rect.move_ip(diagonal_speed, diagonal_speed)
+                self.is_player_image = False
+                self.last_moved = 'downright'
+            else:
+                self.player_rect.move_ip(self.movement_speed, 0)
+                self.is_player_image = False
+                self.last_moved = 'right'
+       
+        elif key[pg.K_w]:
             self.player_rect.move_ip(0, -self.movement_speed)
             self.is_player_image = False
             self.last_moved = 'up'
-        if key[pg.K_s]:
+        elif key[pg.K_s]:
             self.player_rect.move_ip(0, self.movement_speed)
             self.is_player_image = False
             self.last_moved = 'down'
     
+        else:
+            self.is_player_image = True
             
         
+     #responsible for animating charackter movement   
     def animate(self):
         current_time = time.time()
         delta_time = current_time - self.last_frame_time
@@ -137,11 +232,7 @@ class Player(pg.sprite.Sprite):
             if self.animation_timer >= self.animation_delay:
                 self.animation_timer = 0
                 self.is_player_image = True
-        # self.animation_timer += pg.time.get_ticks() # gets elapsed time
-        # if self.animation_timer >= self.animation_delay:
-        #     self.is_player_image = not self.is_player_image #toggles between sprites
-        #     self.animation_timer = 0 #resets timer
-
+    
 
 player_image_path_raw = 'Images/Player_sprites/player_still.png'
 player_image_path_1 = 'Images/Player_sprites/player_down_1.png'
@@ -159,10 +250,22 @@ player_image_path_raw_right= 'Images/Player_sprites/player_right_still.png'
 player_image_right_path_1 = 'Images/Player_sprites/player_right_1.png'
 player_image_right_path_2 = 'Images/Player_sprites/player_right_2.png'
 
+player_image_path_raw_upleft= 'Images/Player_sprites/player_upleft_still.png'
+player_image_upleft_path_1 = 'Images/Player_sprites/player_upleft_1.png'
+player_image_upleft_path_2 = 'Images/Player_sprites/player_upleft_2.png'
+
+player_image_path_raw_downleft= 'Images/Player_sprites/player_downleft_still.png'
+player_image_downleft_path_1 = 'Images/Player_sprites/player_downleft_1.png'
+player_image_downleft_path_2 = 'Images/Player_sprites/player_downleft_2.png'
+
+player_image_path_raw_upright= 'Images/Player_sprites/player_upright_still.png'
+player_image_upright_path_1 = 'Images/Player_sprites/player_upright_1.png'
+player_image_upright_path_2 = 'Images/Player_sprites/player_upright_2.png'
+
+player_image_path_raw_downright= 'Images/Player_sprites/player_downright_still.png'
+player_image_downright_path_1 = 'Images/Player_sprites/player_downright_1.png'
+player_image_downright_path_2 = 'Images/Player_sprites/player_downright_2.png'
 
 
-
-
-
-player = Player(player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, (50, 50))
+player = Player(player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, (50, 50))
 
