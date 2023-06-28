@@ -1,10 +1,11 @@
 import pygame as pg
 import time
+from boundries import BOUNDRY_RIGHT, BOUNDRY_LEFT
 
 
 
 class Monster1(pg.sprite.Sprite):
-    def __init__(self, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, position ):
+    def __init__(self, x, y, speed, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, position ):
         super().__init__()
         self.monster_image_still = pg.transform.scale(pg.image.load(monster_image_path_raw_down).convert_alpha(), (100, 100))
 
@@ -38,90 +39,86 @@ class Monster1(pg.sprite.Sprite):
         self.monster_rect.topleft = position #sets initial position
         self.is_monster_image = True
         self.animation_timer = 0
-        self.animation_delay = 350
+        self.animation_delay = 700
         self.movement_speed = 5
         self.last_moved = ''
         self.last_frame_time = time.time()
 
-   
-   
+
+        self.x = x
+        self.y = y
+        self.speed = speed
+        self.direction = 1
+
+
+    def monster_update(self):
+        self.x += self.speed * self.direction
+        self.monster_rect.x = self.x 
+        
+        
+        if self.direction == -1:
+            self.last_moved = BOUNDRY_LEFT
+        elif self.direction == 1:
+            self.last_moved = BOUNDRY_RIGHT
+
+        if self.monster_rect.right > BOUNDRY_RIGHT:
+            self.x = BOUNDRY_RIGHT -self.monster_rect.width
+            self.direction = -1
+        elif self.monster_rect.left < BOUNDRY_LEFT:
+            self.x = BOUNDRY_LEFT 
+            self.direction = 1
+
+            
+
+
    
     def draw_monster(self, screen):
-
-        if self.last_moved == 'down':
-            if self.is_monster_image:
-                screen.blit(self.monster_image_down_still, self.monster_rect)
-            elif self.animation_timer >= self.animation_delay // 2:
-                screen.blit(self.monster_image_down_2, self.monster_rect)
-            else:
-                screen.blit(self.monster_image_down_1, self.monster_rect)
-
-        elif self.last_moved == 'up':
-            if self.is_monster_image:
-                screen.blit(self.monster_image_up_still, self.monster_rect)
-            elif self.animation_timer >= self.animation_delay // 2:
-                screen.blit(self.monster_image_up_2, self.monster_rect)
-            else:
-                screen.blit(self.monster_image_up_1, self.monster_rect)
-
-        elif self.last_moved == 'left':
+        if self.last_moved == BOUNDRY_LEFT:
             if self.is_monster_image:
                 screen.blit(self.monster_image_left_still, self.monster_rect)
-            elif self.animation_timer >= self.animation_delay // 2:
+            elif self.animation_timer >= self.animation_delay :
                 screen.blit(self.monster_image_left_2, self.monster_rect)
             else:
                 screen.blit(self.monster_image_left_1, self.monster_rect)
 
-        elif self.last_moved == 'right':
+        elif self.last_moved == BOUNDRY_RIGHT:
             if self.is_monster_image:
                 screen.blit(self.monster_image_right_still, self.monster_rect)
-            elif self.animation_timer >= self.animation_delay // 2:
+            elif self.animation_timer >= self.animation_delay:
                 screen.blit(self.monster_image_right_2, self.monster_rect)
             else:
                 screen.blit(self.monster_image_right_1, self.monster_rect)
 
-
         elif self.is_monster_image:
                 screen.blit(self.monster_image_down_still, self.monster_rect)
 
+    
 
-    def monster_movement(self):
-        key = pg.key.get_pressed()
-        if key[pg.K_a]:
-            self.monster_rect.move_ip(-self.movement_speed, 0)
-            self.is_monster_image = False
-            self.last_moved = 'left'
-        
-        elif key[pg.K_d]:
-            self.monster_rect.move_ip(self.movement_speed, 0)
-            self.is_monster_image = False
-            self.last_moved = 'right'
-        
-        elif key[pg.K_w]:
-            self.monster_rect.move_ip(0, -self.movement_speed)
-            self.is_monster_image = False
-            self.last_moved = 'up'
 
-        elif key[pg.K_s]:
-            self.monster_rect.move_ip(0, self.movement_speed)
-            self.is_monster_image  = False
-            self.last_moved = 'down'
 
-        else:
-            self.is_monster_image  = True
-        
-        
      #responsible for animating charackter movement   
     def monster_animate(self):
         current_time = time.time()
         delta_time = current_time - self.last_frame_time
         self.last_frame_time = current_time
 
-        if not self.is_monster_image and self.last_moved:
+        if self.direction != 0:
             self.animation_timer += delta_time * 700
             if self.animation_timer >= self.animation_delay:
-                self.animation_timer = 0
+                self.animation_timer = 350
                 self.is_monster_image = True
+            else:
+                self.is_monster_image = False
+
+  
+
+
+
+        # if not self.is_monster_image and self.last_moved != 0:
+        #     self.animation_timer += delta_time * 700
+        #     if self.animation_timer >= self.animation_delay:
+        #         self.animation_timer = 0
+        #         self.is_monster_image = True
 
 
 
@@ -147,4 +144,4 @@ monster_image_path_raw_right= 'Images/Monster_1_sprites/monster_right_still.png'
 monster_image_right_path_1 = 'Images/Monster_1_sprites/monster_right_1.png'
 monster_image_right_path_2 = 'Images/Monster_1_sprites/monster_right_2.png'
 
-monster1 = Monster1(monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, (50, 50))
+monster1 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, (50, 50))

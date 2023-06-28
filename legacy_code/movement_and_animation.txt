@@ -19,3 +19,52 @@
             if self.animation_timer >= self.animation_delay:
                 self.animation_timer = 0
                 self.is_player_image = True
+
+
+
+    #this are for monster automatic movement:
+    
+    # if self.last_moved == 'down':
+        #     if self.is_monster_image:
+        #         screen.blit(self.monster_image_down_still, self.monster_rect)
+        #     elif self.animation_timer >= self.animation_delay // 2:
+        #         screen.blit(self.monster_image_down_2, self.monster_rect)
+        #     else:
+        #         screen.blit(self.monster_image_down_1, self.monster_rect)
+
+        # elif self.last_moved == 'up':
+        #     if self.is_monster_image:
+        #         screen.blit(self.monster_image_up_still, self.monster_rect)
+        #     elif self.animation_timer >= self.animation_delay // 2:
+        #         screen.blit(self.monster_image_up_2, self.monster_rect)
+        #     else:
+        #         screen.blit(self.monster_image_up_1, self.monster_rect)
+
+
+
+
+          # def monster_update(self):
+    #     self.x += self.speed * self.direction
+    #     self.monster_rect.x = self.x 
+        
+        
+    #     if self.monster_rect.right > BOUNDRY_RIGHT:
+    #         self.x = BOUNDRY_RIGHT -self.monster_rect.width
+    #         self.direction = -1
+    #     elif self.monster_rect.left < BOUNDRY_LEFT:
+    #         self.x = BOUNDRY_LEFT
+    #         self.direction = 1
+
+    # def monster_update(self):
+    #     self.x += self.speed * self.direction
+    #     if self.monster_rect.right > BOUNDRY_RIGHT:
+    #         self.x = BOUNDRY_RIGHT 
+    #         self.direction = -1
+    #     elif self.monster_rect.left < BOUNDRY_LEFT:
+    #         self.x = BOUNDRY_LEFT
+    #         self.direction = 1
+
+
+
+
+    
