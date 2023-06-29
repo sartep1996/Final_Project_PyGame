@@ -70,19 +70,42 @@ class Monster1(pg.sprite.Sprite):
 
             
    
+    # def draw_monster(self, screen):
+    #     if self.last_moved == BOUNDRY_LEFT:
+    #         if self.direction != 0 and not self.is_monster_image:
+    #             screen.blit(self.monster_image_left_2, self.monster_rect)
+    #         else:
+    #             screen.blit(self.monster_image_left_1, self.monster_rect)
+       
+    #     elif self.last_moved == BOUNDRY_RIGHT:
+    #         if self.direction != 0 and not self.is_monster_image:
+    #             screen.blit(self.monster_image_right_2, self.monster_rect)
+    #         else:
+    #             screen.blit(self.monster_image_right_1, self.monster_rect)
+    #     else:
+    #         screen.blit(self.monster_image_down_still, self.monster_rect)
+
+
     def draw_monster(self, screen):
         if self.last_moved == BOUNDRY_LEFT:
             if self.direction != 0 and not self.is_monster_image:
-                screen.blit(self.monster_image_left_2, self.monster_rect)
+                if self.animation_timer < self.animation_delay / 2:
+                    screen.blit(self.monster_image_left_1, self.monster_rect)
+                else:
+                    screen.blit(self.monster_image_left_2, self.monster_rect)
             else:
-                screen.blit(self.monster_image_left_1, self.monster_rect)
+                screen.blit(self.monster_image_left_still, self.monster_rect)
         elif self.last_moved == BOUNDRY_RIGHT:
             if self.direction != 0 and not self.is_monster_image:
-                screen.blit(self.monster_image_right_2, self.monster_rect)
+                if self.animation_timer < self.animation_delay / 2:
+                    screen.blit(self.monster_image_right_1, self.monster_rect)
+                else:
+                    screen.blit(self.monster_image_right_2, self.monster_rect)
             else:
-                screen.blit(self.monster_image_right_1, self.monster_rect)
+                screen.blit(self.monster_image_right_still, self.monster_rect)
         else:
             screen.blit(self.monster_image_down_still, self.monster_rect)
+
 
 
 
