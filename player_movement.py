@@ -97,7 +97,8 @@ class Player(pg.sprite.Sprite):
         self.last_moved = ''
         self.last_frame_time = time.time()
     
-
+    def set_position(self, x, y):
+        self.player_rect.topleft = (x, y)
 
     def draw(self, screen):
 

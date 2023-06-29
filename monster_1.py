@@ -68,22 +68,12 @@ class Monster1(pg.sprite.Sprite):
             self.x = BOUNDRY_LEFT 
             self.direction = 1
 
-            
-   
-    # def draw_monster(self, screen):
-    #     if self.last_moved == BOUNDRY_LEFT:
-    #         if self.direction != 0 and not self.is_monster_image:
-    #             screen.blit(self.monster_image_left_2, self.monster_rect)
-    #         else:
-    #             screen.blit(self.monster_image_left_1, self.monster_rect)
-       
-    #     elif self.last_moved == BOUNDRY_RIGHT:
-    #         if self.direction != 0 and not self.is_monster_image:
-    #             screen.blit(self.monster_image_right_2, self.monster_rect)
-    #         else:
-    #             screen.blit(self.monster_image_right_1, self.monster_rect)
-    #     else:
-    #         screen.blit(self.monster_image_down_still, self.monster_rect)
+        # if self.monster_rect.right > playerrect.left and self.direction == 1:
+        #         self.monster_rect.right = playerrect.left
+        # elif self.monster_rect.left < playerrect.right and self.direction == -1:
+        #         self.monster_rect.left = playerrect.right
+        
+        
 
 
     def draw_monster(self, screen):
@@ -105,6 +95,50 @@ class Monster1(pg.sprite.Sprite):
                 screen.blit(self.monster_image_right_still, self.monster_rect)
         else:
             screen.blit(self.monster_image_down_still, self.monster_rect)
+
+
+
+    # def monster_collides_with(self, playerrect):
+    #     if self.monster_rect.colliderect(playerrect):
+            
+    #         if self.monster_rect.right > playerrect.left and self.movement_speed > 0:
+    #             self.movement_speed = 0
+    #             self.monster_rect.right = playerrect.left 
+    #         elif self.monster_rect.left < playerrect.right and self.movement_speed < 0:
+    #             self.movement_speed = 0
+    #             self.monster_rect.left = playerrect.right 
+            
+
+    #         if self.monster_rect.bottom > playerrect.top and self.movement_speed > 0:
+    #             self.movement_speed = 0
+    #             self.monster_rect.bottom = playerrect.top 
+    #         elif self.monster_rect.top < playerrect.bottom and self.movement_speed < 0:
+    #             self.movement_speed = 0
+    #             self.monster_rect.top = playerrect.bottom
+
+
+    def monster_collides_with(self, playerrect):
+        if self.monster_rect.colliderect(playerrect):
+            
+            if self.direction == 1 and self.monster_rect.right > playerrect.left:
+                self.direction = -1
+                self.monster_rect.right = playerrect.left
+            
+            elif self.direction == -1 and self.monster_rect.left < playerrect.right:
+                self.direction = 1 
+                self.monster_rect.left = playerrect.right
+
+            self.speed
+            
+
+            # if self.monster_rect.bottom > playerrect.top and self.speed > 0:
+            #     self.speed = 0
+            #     self.monster_rect.bottom = playerrect.top 
+            # elif self.monster_rect.top < playerrect.bottom and self.speed < 0:
+            #     self.speed = 0
+            #     self.monster_rect.top = playerrect.bottom
+
+
 
 
 

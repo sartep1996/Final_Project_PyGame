@@ -15,6 +15,7 @@ background_lvl_1 = pg.transform.scale(original_background_lvl_1, (800, 600))
 
 
 from player_movement import player
+player.set_position(250, 250)
 from monster_1 import monster1
 from background_objects import plane_b_object
 from collision_functions import collision_with_static_object, collision_with_moving_object
