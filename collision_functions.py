@@ -51,6 +51,7 @@ def collision_with_moving_object(obj1, obj2, coltol, player_speed, monster_speed
         elif obj1.bottom > BOUNDRY_BOTTOM:
             obj1.bottom = BOUNDRY_BOTTOM
 
+    # Check for boundary collision with obj2
     if not screenrect.contains(obj2):
 
         if obj2.left < BOUNDRY_LEFT:

@@ -57,6 +57,7 @@ class Monster1(pg.sprite.Sprite):
             self.last_moved = BOUNDRY_LEFT
         elif self.direction == 1:
             self.last_moved = BOUNDRY_RIGHT
+        
 
         if self.monster_rect.right > BOUNDRY_RIGHT:
             self.x = BOUNDRY_RIGHT -self.monster_rect.width
@@ -64,6 +65,7 @@ class Monster1(pg.sprite.Sprite):
         elif self.monster_rect.left < BOUNDRY_LEFT:
             self.x = BOUNDRY_LEFT 
             self.direction = 1
+
 
         self.monster_collides_with(playerrect)
 
@@ -97,16 +99,6 @@ class Monster1(pg.sprite.Sprite):
                 screen.blit(self.monster_image_up_still, self.monster_rect)
 
 
-        elif self.last_moved == BOUNDRY_TOP or self.last_moved == self.monster_image_up_still:
-            if self.direction != 0 and not self.is_monster_image:
-                if self.animation_timer < self.animation_delay / 2:
-                    screen.blit(self.monster_image_up_1, self.monster_rect)
-                else:
-                    screen.blit(self.monster_image_up_2, self.monster_rect)
-            else:
-                screen.blit(self.monster_image_up_still, self.monster_rect)
-
-
         elif self.last_moved == BOUNDRY_BOTTOM or self.last_moved == self.monster_image_down_still:
             if self.direction != 0 and not self.is_monster_image:
                 if self.animation_timer < self.animation_delay / 2:
@@ -125,33 +117,53 @@ class Monster1(pg.sprite.Sprite):
             
             if self.direction == 1 and self.monster_rect.right > playerrect.left:
                 self.direction = 0
-                self.monster_rect.right = playerrect.left
                 self.last_moved = self.monster_image_left_still
+                self.monster_rect.right = playerrect.left
             
             elif self.direction == -1 and self.monster_rect.left < playerrect.right:
                 self.direction = 0
-                self.monster_rect.left = playerrect.right
                 self.last_moved = self.monster_image_right_still
+                self.monster_rect.left = playerrect.right
 
-            elif self.direction == 1 and self.monster_rect.top > playerrect.bottom:
+            elif self.direction == 0:
+                if self.monster_rect.centerx < playerrect.centerx:
+                    self.last_moved = self.monster_image_left_still
+                else:
+                    self.last_moved = self.monster_image_right_still
                 self.direction = 0
-                self.monster_rect.bottom = playerrect.top
-                self.last_moved = self.monster_image_up_still
 
-            elif self.direction == -1 and self.monster_rect.top < playerrect.bottom:
-                self.direction = 0
-                self.monster_rect.top = playerrect.bottom
-                self.last_moved = self.monster_image_down_still
+            if self.direction == 1 or self.direction == -1:
+                if self.monster_rect.bottom > playerrect.top:
+                    self.direction = 0
+                    self.monster_rect.bottom = playerrect.top
+                    self.last_moved = self.monster_image_up_still
+                elif self.monster_rect.top < playerrect.bottom:
+                    self.direction = 0
+                    self.monster_rect.top = playerrect.bottom
+                    self.last_moved = self.monster_image_down_still
 
             
-            
 
-            # if self.monster_rect.bottom > playerrect.top and self.speed > 0:
-            #     self.speed = 0
-            #     self.monster_rect.bottom = playerrect.top 
-            # elif self.monster_rect.top < playerrect.bottom and self.speed < 0:
-            #     self.speed = 0
+
+            # if self.direction == 1 or self.direction == -1 and self.monster_rect.bottom > playerrect.top:
+            #     self.direction == 0 
+            #     self.monster_rect.bottom = playerrect.top
+            #     self.last_moved = self.monster_image_up_still
+
+            # elif self.direction == 1 or self.direction == -1 and self.monster_rect.top < playerrect.bottom:
+            #     self.direction == 0 
             #     self.monster_rect.top = playerrect.bottom
+            #     self.last_moved = self.monster_image_down_still
+
+            # elif self.direction == 0:
+            #     if self.monster_rect.centerx < playerrect.centerx:
+            #         self.direction = 0
+            #         self.last_moved = self.monster_image_up_still
+            #     else:
+            #         self.direction = 0
+            #         self.last_moved = self.monster_image_down_still
+
+       
 
      #responsible for animating charackter movement   
     def monster_animate(self):

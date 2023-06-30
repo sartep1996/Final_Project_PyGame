@@ -93,7 +93,7 @@ class Player(pg.sprite.Sprite):
         self.is_player_image = True
         self.animation_timer = 0
         self.animation_delay = 350
-        self.movement_speed = 5
+        self.movement_speed = 9
         self.last_moved = ''
         self.last_frame_time = time.time()
     

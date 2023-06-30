@@ -44,6 +44,7 @@ while run:
     boundries(player.player_rect)
     boundries(monster1.monster_rect)
     
+    
 
     collision_with_static_object(player.player_rect, plane_b_object_rect, 10)
     collision_with_moving_object(player.player_rect, monster1.monster_rect, 10, player.movement_speed, monster1.movement_speed,  screen_rect)
