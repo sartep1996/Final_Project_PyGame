@@ -17,6 +17,7 @@ background_lvl_1 = pg.transform.scale(original_background_lvl_1, (800, 600))
 from player_movement import player
 player.set_position(250, 250)
 from monster_1 import monster1
+monster1.set_position(200, 200)
 from background_objects import plane_b_object
 from collision_functions import collision_with_static_object, collision_with_moving_object
 from boundries import boundries
@@ -38,7 +39,7 @@ while run:
     player.main_player_movement()
     player.animate()
     
-    monster1.monster_update(player.player_rect)
+    monster1.monster_update(player.player_rect, screen)
     monster1.monster_animate()
 
     boundries(player.player_rect)
