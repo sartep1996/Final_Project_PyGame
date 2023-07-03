@@ -1,6 +1,7 @@
 import pygame as pg
 import time
 from boundries import BOUNDRY_RIGHT, BOUNDRY_LEFT, BOUNDRY_BOTTOM, BOUNDRY_TOP
+import math
 
 
 
@@ -40,12 +41,16 @@ class Monster1(pg.sprite.Sprite):
         self.movement_speed = 4
         self.last_moved = ''
         self.last_frame_time = time.time()
+        self.should_follow_player = False
+        self.patrol_mode = True
+        self.check_collision = True
 
 
         self.x = x
         self.y = y
         self.speed = speed
         self.direction = 1
+        self.direction_y = 0
 
     def set_position(self, x, y):
         self.monster_rect.topleft = (x, y)
@@ -70,8 +75,26 @@ class Monster1(pg.sprite.Sprite):
             self.direction = 1
 
         self.monster_collides_with(player_rect)
-
-
+    
+        # else:
+        #     if player_rect.left > self.monster_rect.right:
+        #         self.direction = 1
+        #         self.last_moved = BOUNDRY_RIGHT
+        #     elif player_rect.right < self.monster_rect.left:
+        #         self.direction = -1
+        #         self.last_moved = BOUNDRY_LEFT
+        #     else:
+        #         self.direction = 0
+        #         # Determine the appropriate still image based on player's vertical position
+        #         if player_rect.top < self.monster_rect.top:
+        #             self.last_moved = self.monster_image_up_still
+        #         elif player_rect.bottom > self.monster_rect.bottom:
+        #             self.last_moved = self.monster_image_down_still
+            
+        #     self.x += self.speed * self.direction
+        #     self.monster_rect.x = self.x
+        #     self.y += self.speed * self.direction
+        #     self.monster_rect.y = self.y
 
         
     def draw_monster(self, screen):
@@ -117,6 +140,8 @@ class Monster1(pg.sprite.Sprite):
 
     def monster_collides_with(self, player_rect):
         if self.monster_rect.colliderect(player_rect):
+            self.should_follow_player = True
+            
             player_center = player_rect.center
             monster_center = self.monster_rect.center
 
@@ -137,31 +162,62 @@ class Monster1(pg.sprite.Sprite):
                 else:
                     self.direction = 0
                     self.last_moved = self.monster_image_up_still
-            
-            self.monster_follow_player(player_rect)
 
+            self.monster_follow_player(player_rect)
+            # self.should_follow_player = True
+            
+            
+
+
+    # def monster_follow_player(self, player_rect):
+    #     player_center = player_rect.center
+    #     monster_center = self.monster_rect.center
+
+    #     dx = player_center[0] - monster_center[0]
+    #     dy = player_center[1] - monster_center[1]
+
+    #     if abs(dx) > abs(dy):
+    #         if dx > 0:
+    #             self.direction = 1
+    #             dx = min(dx, self.movement_speed)
+    #         else:
+    #             self.direction = 2
+    #             dx = max(dx, -self.movement_speed)
+    #         dy = 0
+            
+    #     else:
+    #         if dy > 0:
+    #             self.direction_y = 1
+    #             dx = min(dx, self.movement_speed)
+    #         else:
+    #             self.direction_y = -1
+    #             dx = max(dx, self.movement_speed)
+    #         dx = 0
+
+    #     self.x += self.speed + self.direction
+    #     self.monster_rect.x = self.x
 
     def monster_follow_player(self, player_rect):
-        player_center = player_rect.center
-        monster_center = self.monster_rect.center
+        dx = player_rect.centerx - self.monster_rect.centerx
+        dy = player_rect.centery - self.monster_rect.centery
+        distance = math.hypot (dx, dy)
 
-        dx = player_center[0] - monster_center[0]
-        dy = player_center[1] - monster_center[1]
-
-        if abs(dx) > abs(dy):
-            if dx > 0:
-                self.direction = 1
-            else:
-                self.direction = 1
-
+        if distance != 0:
+            direction_x = dx / distance
+            direction_y = dy / distance
         else:
-            if dy > 0:
-                self.direction = 0
-            else:
-                self.direction = 2
+            direction_x = 0
+            direction_y = 0
 
-        self.x += self.speed + self.direction
-        self.monster_rect.x = self.x
+        if  self.should_follow_player:
+            new_x = self.monster_rect.x + direction_x * self.speed
+            new_y = self.monster_rect.y + direction_y * self.speed
+
+            new_rect = pg.Rect(new_x, new_y, self.monster_rect.width, self.monster_rect.height)
+            if not new_rect.colliderect(player_rect):
+                self.monster_rect.x = new_x
+                self.monster_rect.y = new_y
+       
         
 
 
