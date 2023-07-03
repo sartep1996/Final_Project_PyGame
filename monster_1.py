@@ -37,7 +37,7 @@ class Monster1(pg.sprite.Sprite):
         self.is_monster_image = True
         self.animation_timer = 0
         self.animation_delay = 350
-        self.movement_speed = 5
+        self.movement_speed = 4
         self.last_moved = ''
         self.last_frame_time = time.time()
 
@@ -137,6 +137,31 @@ class Monster1(pg.sprite.Sprite):
                 else:
                     self.direction = 0
                     self.last_moved = self.monster_image_up_still
+            
+            self.monster_follow_player(player_rect)
+
+
+    def monster_follow_player(self, player_rect):
+        player_center = player_rect.center
+        monster_center = self.monster_rect.center
+
+        dx = player_center[0] - monster_center[0]
+        dy = player_center[1] - monster_center[1]
+
+        if abs(dx) > abs(dy):
+            if dx > 0:
+                self.direction = 1
+            else:
+                self.direction = 1
+
+        else:
+            if dy > 0:
+                self.direction = 0
+            else:
+                self.direction = 2
+
+        self.x += self.speed + self.direction
+        self.monster_rect.x = self.x
         
 
 
