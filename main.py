@@ -39,7 +39,7 @@ while run:
     player.main_player_movement()
     player.animate()
     
-    monster1.monster_update(player.player_rect, screen)
+    monster1.monster_update(player.player_rect)
     monster1.monster_animate()
 
     boundries(player.player_rect)

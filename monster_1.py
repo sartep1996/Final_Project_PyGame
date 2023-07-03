@@ -121,13 +121,13 @@ class Monster1(pg.sprite.Sprite):
         if self.monster_rect.colliderect(playerrect):
             if self.direction == 1 and self.monster_rect.right > playerrect.left:
                 self.direction = 0
-                self.last_moved = self.monster_image_left_still
                 self.monster_rect.right = playerrect.left
+                self.last_moved = self.monster_image_left_still
             
             elif self.direction == -1 and self.monster_rect.left < playerrect.right:
                 self.direction = 0
-                self.last_moved = self.monster_image_right_still
                 self.monster_rect.left = playerrect.right
+                self.last_moved = self.monster_image_right_still
 
             elif self.direction == 0:
                 if self.monster_rect.centerx < playerrect.centerx:
@@ -137,18 +137,18 @@ class Monster1(pg.sprite.Sprite):
                     self.direction = 0
                     self.last_moved = self.monster_image_right_still
 
-            elif self.direction == 0 or self.direction != 0 and self.monster_rect.bottom > playerrect.top:
+            elif self.direction == 0 or (self.direction != 0 and self.monster_rect.bottom > playerrect.top):
                 self.direction = 0
                 self.monster_rect.bottom = playerrect.top
                 self.last_moved = self.monster_image_up_still
         
-            elif self.direction == 0 or self.direction != 0 and self.monster_rect.top < playerrect.bottom:
+            elif self.direction == 0 or (self.direction != 0 and self.monster_rect.top < playerrect.bottom):
                 self.direction = 0
                 self.monster_rect.top = playerrect.bottom
                 self.last_moved = self.monster_image_down_still
 
             elif self.direction == 0:
-                if self.monster_rect.centerx < playerrect.centerx:
+                if self.monster_rect.centery > playerrect.centery:
                     self.direction = 0
                     self.last_moved = self.monster_image_down_still
                 else:
