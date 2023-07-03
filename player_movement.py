@@ -96,6 +96,8 @@ class Player(pg.sprite.Sprite):
         self.movement_speed = 9
         self.last_moved = ''
         self.last_frame_time = time.time()
+
+        
     
     def set_position(self, x, y):
         self.player_rect.topleft = (x, y)

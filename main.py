@@ -39,8 +39,13 @@ while run:
     player.main_player_movement()
     player.animate()
     
+    player_rect = player.player_rect # Assuming you have a player object with a rect attribute
+    
     monster1.monster_update(player.player_rect)
     monster1.monster_animate()
+
+
+    
 
     boundries(player.player_rect)
     boundries(monster1.monster_rect)
