@@ -57,11 +57,26 @@ class Monster1(pg.sprite.Sprite):
 
 
     def monster_update(self, player_rect):
+
+        self.monster_patrol_left_right()
+
+        self.monster_collides_with(player_rect)
+        
+        if self.should_follow_player:
+            self.monster_follow_player(player_rect)
+
+    '''
+    def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
+    '''
+    
+
+    def monster_patrol_left_right(self):
+        
         if self.patrol_mode:
             self.x += self.speed * self.direction
             self.monster_rect.x = self.x 
         
-        
+    
         if self.direction == -1:
             self.last_moved = BOUNDRY_LEFT
         elif self.direction == 1:
@@ -74,34 +89,6 @@ class Monster1(pg.sprite.Sprite):
         elif self.monster_rect.left < BOUNDRY_LEFT:
             self.x = BOUNDRY_LEFT 
             self.direction = 1
-
-        self.monster_collides_with(player_rect)
-        
-        
-        if self.should_follow_player:
-            self.monster_follow_player(player_rect)
-
-    
-        # else:
-        #     if player_rect.left > self.monster_rect.right:
-        #         self.direction = 1
-        #         self.last_moved = BOUNDRY_RIGHT
-        #     elif player_rect.right < self.monster_rect.left:
-        #         self.direction = -1
-        #         self.last_moved = BOUNDRY_LEFT
-        #     else:
-        #         self.direction = 0
-        #         # Determine the appropriate still image based on player's vertical position
-        #         if player_rect.top < self.monster_rect.top:
-        #             self.last_moved = self.monster_image_up_still
-        #         elif player_rect.bottom > self.monster_rect.bottom:
-        #             self.last_moved = self.monster_image_down_still
-            
-        #     self.x += self.speed * self.direction
-        #     self.monster_rect.x = self.x
-        #     self.y += self.speed * self.direction
-        #     self.monster_rect.y = self.y
-
         
     def draw_monster(self, screen):
         if self.last_moved == BOUNDRY_LEFT or self.last_moved == self.monster_image_right_still:
@@ -148,12 +135,9 @@ class Monster1(pg.sprite.Sprite):
         if self.monster_rect.colliderect(player_rect):
             self.should_follow_player = True
             self.patrol_mode = False
-            
-            player_center = player_rect.center # remove
-            monster_center = self.monster_rect.center # remove
 
-            dx = player_center[0] - monster_center[0]
-            dy = player_center[1] - monster_center[1]
+            dx = player_rect.center[0] - self.monster_rect.center[0]
+            dy = player_rect.center[1] - self.monster_rect.center[1]
 
             if abs(dx) > abs(dy):
                 if dx > 0:
@@ -170,67 +154,11 @@ class Monster1(pg.sprite.Sprite):
                     self.direction = 0
                     self.last_moved = self.monster_image_up_still
 
-            # if self.should_follow_player:
-            #     self.monster_follow_player(player_rect)
-        # self.monster_follow_player(player_rect)
-            
-            
-
-
-    # def monster_follow_player(self, player_rect):
-    #     player_center = player_rect.center
-    #     monster_center = self.monster_rect.center
-
-    #     dx = player_center[0] - monster_center[0]
-    #     dy = player_center[1] - monster_center[1]
-
-    #     if abs(dx) > abs(dy):
-    #         if dx > 0:
-    #             self.direction = 1
-    #             dx = min(dx, self.movement_speed)
-    #         else:
-    #             self.direction = 2
-    #             dx = max(dx, -self.movement_speed)
-    #         dy = 0
-            
-    #     else:
-    #         if dy > 0:
-    #             self.direction_y = 1
-    #             dx = min(dx, self.movement_speed)
-    #         else:
-    #             self.direction_y = -1
-    #             dx = max(dx, self.movement_speed)
-    #         dx = 0
-
-    #     self.x += self.speed + self.direction
-    #     self.monster_rect.x = self.x
-
-    # def monster_follow_player(self, player_rect):
-    #     dx = player_rect.centerx - self.monster_rect.centerx
-    #     dy = player_rect.centery - self.monster_rect.centery
-    #     distance = math.hypot (dx, dy)
-
-    #     if distance != 0:
-    #         direction_x = dx / distance
-    #         direction_y = dy / distance
-    #     else:
-    #         direction_x = 0
-    #         direction_y = 0
-
-    #     if  self.should_follow_player:
-    #         new_x = self.monster_rect.x + direction_x * self.speed
-    #         new_y = self.monster_rect.y + direction_y * self.speed
-
-    #         new_rect = pg.Rect(new_x, new_y, self.monster_rect.width, self.monster_rect.height)
-    #         if not new_rect.colliderect(player_rect):
-    #             self.monster_rect.x = new_x
-    #             self.monster_rect.y = new_y
-
 
     def monster_follow_player(self, player_rect):
         LERP_FACTOR      = 0.05
-        minimum_distance = 140
-        maximum_distance = 200
+        minimum_distance = 120
+        maximum_distance = 150
         
         player_vector = pg.math.Vector2(player_rect.center)
         monster_vector = pg.math.Vector2(self.monster_rect.center)
@@ -246,17 +174,31 @@ class Monster1(pg.sprite.Sprite):
             new_monster_vector = monster_vector + direction_vector * step_distance
             
         self.monster_rect.center = (new_monster_vector.x, new_monster_vector.y)
-            
-            # lerp_vector = monster_vector.lerp(new_follower_vector, LERP_FACTOR)
-            # self.monster_rect.center = (int(lerp_vector.x), int(lerp_vector.y))
+
+        self.folowing_monster_sprites_update(player_rect, distance)
+        self.monster_animate()
 
 
-        # player_vector.x = new_monster_vector.x
-        # player_vector.y = new_monster_vector.y
+    def folowing_monster_sprites_update(self, player_rect, distance):
+        dx = player_rect.center[0] - self.monster_rect.center[0]
+        dy = player_rect.center[1] - self.monster_rect.center[1]
+
+        if abs(dx) > abs(dy):
+            if dx > 0:
+                distance  = 0
+                self.last_moved = self.monster_image_left_still
+            else:
+                distance = 0
+                self.last_moved = self.monster_image_right_still
+        else:
+            if dy > 0:
+                distance = 0
+                self.last_moved = self.monster_image_down_still
+            else:
+                distance = 0
+                self.last_moved = self.monster_image_up_still
+
         
-    
-
-
 
      #responsible for animating charackter movement   
     def monster_animate(self):
