@@ -43,7 +43,7 @@ class Monster1(pg.sprite.Sprite):
         self.last_frame_time = time.time()
         self.should_follow_player = False
         self.patrol_mode = True
-        self.check_collision = True
+        # self.check_collision = True
 
 
         self.x = x
@@ -57,8 +57,9 @@ class Monster1(pg.sprite.Sprite):
 
 
     def monster_update(self, player_rect):
-        self.x += self.speed * self.direction
-        self.monster_rect.x = self.x 
+        if self.patrol_mode:
+            self.x += self.speed * self.direction
+            self.monster_rect.x = self.x 
         
         
         if self.direction == -1:
@@ -75,6 +76,11 @@ class Monster1(pg.sprite.Sprite):
             self.direction = 1
 
         self.monster_collides_with(player_rect)
+        
+        
+        if self.should_follow_player:
+            self.monster_follow_player(player_rect)
+
     
         # else:
         #     if player_rect.left > self.monster_rect.right:
@@ -141,9 +147,10 @@ class Monster1(pg.sprite.Sprite):
     def monster_collides_with(self, player_rect):
         if self.monster_rect.colliderect(player_rect):
             self.should_follow_player = True
+            self.patrol_mode = False
             
-            player_center = player_rect.center
-            monster_center = self.monster_rect.center
+            player_center = player_rect.center # remove
+            monster_center = self.monster_rect.center # remove
 
             dx = player_center[0] - monster_center[0]
             dy = player_center[1] - monster_center[1]
@@ -163,8 +170,9 @@ class Monster1(pg.sprite.Sprite):
                     self.direction = 0
                     self.last_moved = self.monster_image_up_still
 
-            self.monster_follow_player(player_rect)
-            # self.should_follow_player = True
+            # if self.should_follow_player:
+            #     self.monster_follow_player(player_rect)
+        # self.monster_follow_player(player_rect)
             
             
 
@@ -197,28 +205,57 @@ class Monster1(pg.sprite.Sprite):
     #     self.x += self.speed + self.direction
     #     self.monster_rect.x = self.x
 
+    # def monster_follow_player(self, player_rect):
+    #     dx = player_rect.centerx - self.monster_rect.centerx
+    #     dy = player_rect.centery - self.monster_rect.centery
+    #     distance = math.hypot (dx, dy)
+
+    #     if distance != 0:
+    #         direction_x = dx / distance
+    #         direction_y = dy / distance
+    #     else:
+    #         direction_x = 0
+    #         direction_y = 0
+
+    #     if  self.should_follow_player:
+    #         new_x = self.monster_rect.x + direction_x * self.speed
+    #         new_y = self.monster_rect.y + direction_y * self.speed
+
+    #         new_rect = pg.Rect(new_x, new_y, self.monster_rect.width, self.monster_rect.height)
+    #         if not new_rect.colliderect(player_rect):
+    #             self.monster_rect.x = new_x
+    #             self.monster_rect.y = new_y
+
+
     def monster_follow_player(self, player_rect):
-        dx = player_rect.centerx - self.monster_rect.centerx
-        dy = player_rect.centery - self.monster_rect.centery
-        distance = math.hypot (dx, dy)
-
-        if distance != 0:
-            direction_x = dx / distance
-            direction_y = dy / distance
-        else:
-            direction_x = 0
-            direction_y = 0
-
-        if  self.should_follow_player:
-            new_x = self.monster_rect.x + direction_x * self.speed
-            new_y = self.monster_rect.y + direction_y * self.speed
-
-            new_rect = pg.Rect(new_x, new_y, self.monster_rect.width, self.monster_rect.height)
-            if not new_rect.colliderect(player_rect):
-                self.monster_rect.x = new_x
-                self.monster_rect.y = new_y
-       
+        LERP_FACTOR      = 0.05
+        minimum_distance = 140
+        maximum_distance = 200
         
+        player_vector = pg.math.Vector2(player_rect.center)
+        monster_vector = pg.math.Vector2(self.monster_rect.center)
+        new_monster_vector = pg.math.Vector2(self.monster_rect.center)
+       
+        distance = monster_vector.distance_to(player_vector)
+        direction_vector = player_vector - monster_vector
+        if distance > minimum_distance:
+            direction_vector /= distance
+            min_step = max(0, distance - maximum_distance)
+            max_step = distance - minimum_distance
+            step_distance = min_step + (max_step - min_step) * LERP_FACTOR
+            new_monster_vector = monster_vector + direction_vector * step_distance
+            
+        self.monster_rect.center = (new_monster_vector.x, new_monster_vector.y)
+            
+            # lerp_vector = monster_vector.lerp(new_follower_vector, LERP_FACTOR)
+            # self.monster_rect.center = (int(lerp_vector.x), int(lerp_vector.y))
+
+
+        # player_vector.x = new_monster_vector.x
+        # player_vector.y = new_monster_vector.y
+        
+    
+
 
 
      #responsible for animating charackter movement   
