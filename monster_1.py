@@ -1,9 +1,8 @@
 import pygame as pg
 import time
 from boundries import BOUNDRY_RIGHT, BOUNDRY_LEFT, BOUNDRY_BOTTOM, BOUNDRY_TOP
-import math
 
-
+CLOSE_DISTANCE_THRESHOLD = 140
 
 class Monster1(pg.sprite.Sprite):
     def __init__(self, x, y, speed, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, position ):
@@ -37,7 +36,7 @@ class Monster1(pg.sprite.Sprite):
         self.monster_rect.topleft = position #sets initial position
         self.is_monster_image = True
         self.animation_timer = 0
-        self.animation_delay = 350
+        self.animation_delay = 150
         self.movement_speed = 4
         self.last_moved = ''
         self.last_frame_time = time.time()
@@ -66,6 +65,7 @@ class Monster1(pg.sprite.Sprite):
 
         self.monster_collides_with(player_rect)
         self.monster_animate()
+        self.monster_animate_when_following(player_rect)
     '''
     def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
     '''
@@ -217,8 +217,29 @@ class Monster1(pg.sprite.Sprite):
             self.is_monster_image = True
             self.animation_timer = 0  # Reset the timer
 
-        if self.should_follow_player and self.direction == 0:
-            self.is_monster_image = False  # Set to False when not moving
+
+
+    def monster_animate_when_following(self, player_rect):
+        current_time = time.time()
+        delta_time = current_time - self.last_frame_time
+        self.last_frame_time = current_time
+
+        if self.direction != 0:
+            self.animation_timer += delta_time * 700
+            if self.animation_timer >= self.animation_delay:
+                self.animation_timer = 0  # Reset the timer
+                self.is_monster_image = not self.is_monster_image  # Toggle the image
+        else:
+            self.is_monster_image = True
+            self.animation_timer = 0  # Reset the timer
+
+        player_vector = pg.math.Vector2(player_rect.center)
+        monster_vector = pg.math.Vector2(self.monster_rect.center)
+        player_distance = player_vector.distance_to(monster_vector)
+        if player_distance < CLOSE_DISTANCE_THRESHOLD:
+            self.is_monster_image = True
+
+
 
 monster_image_path_raw_down = 'Images/Monster_1_sprites/monster_down_still.png'
 monster_image_down_path_1 = 'Images/Monster_1_sprites/monster_down_1.png'
