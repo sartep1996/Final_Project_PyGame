@@ -60,11 +60,12 @@ class Monster1(pg.sprite.Sprite):
 
         self.monster_patrol_left_right()
 
-        self.monster_collides_with(player_rect)
         
         if self.should_follow_player:
             self.monster_follow_player(player_rect)
 
+        self.monster_collides_with(player_rect)
+        self.monster_animate()
     '''
     def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
     '''
@@ -157,7 +158,7 @@ class Monster1(pg.sprite.Sprite):
 
     def monster_follow_player(self, player_rect):
         LERP_FACTOR      = 0.05
-        minimum_distance = 120
+        minimum_distance = 127
         maximum_distance = 150
         
         player_vector = pg.math.Vector2(player_rect.center)
@@ -175,8 +176,9 @@ class Monster1(pg.sprite.Sprite):
             
         self.monster_rect.center = (new_monster_vector.x, new_monster_vector.y)
 
+        
         self.folowing_monster_sprites_update(player_rect, distance)
-        self.monster_animate()
+
 
 
     def folowing_monster_sprites_update(self, player_rect, distance):
@@ -185,19 +187,19 @@ class Monster1(pg.sprite.Sprite):
 
         if abs(dx) > abs(dy):
             if dx > 0:
-                distance  = 0
+                self.direction = 1
                 self.last_moved = self.monster_image_left_still
             else:
-                distance = 0
+                self.direction = -1
                 self.last_moved = self.monster_image_right_still
         else:
             if dy > 0:
-                distance = 0
+                self.direction = 1
                 self.last_moved = self.monster_image_down_still
             else:
-                distance = 0
+                self.direction = -1
                 self.last_moved = self.monster_image_up_still
-
+        
         
 
      #responsible for animating charackter movement   
@@ -214,6 +216,9 @@ class Monster1(pg.sprite.Sprite):
         else:
             self.is_monster_image = True
             self.animation_timer = 0  # Reset the timer
+
+        if self.should_follow_player and self.direction == 0:
+            self.is_monster_image = False  # Set to False when not moving
 
 monster_image_path_raw_down = 'Images/Monster_1_sprites/monster_down_still.png'
 monster_image_down_path_1 = 'Images/Monster_1_sprites/monster_down_1.png'
