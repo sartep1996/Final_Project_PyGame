@@ -77,10 +77,9 @@ class Monster1(pg.sprite.Sprite):
         
         if self.monster_is_attacking:
             self.monster_attack_player(player_rect, screen)
-            if self.animation_timer >= self.animation_delay:
-                self.monster_is_attacking = False
-        else:
-            self.monster_animate_when_following(player_rect)
+            self.monster_is_attacking = False
+        
+        self.monster_animate_when_following(player_rect)
     '''
     def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
     '''
@@ -144,8 +143,28 @@ class Monster1(pg.sprite.Sprite):
             else:
                 screen.blit(self.monster_image_down_still, self.monster_rect)
 
-        else:
-            screen.blit(self.monster_image_down_still, self.monster_rect)
+        elif self.last_moved == self.monster_image_left_attack:
+            screen.blit(self.monster_image_left_attack, self.monster_rect)
+
+        elif self.last_moved == self.monster_image_right_attack:
+            screen.blit(self.monster_image_right_attack, self.monster_rect)
+
+        elif self.last_moved == self.monster_image_up_attack:
+            screen.blit(self.monster_image_up_attack, self.monster_rect)
+
+        elif self.last_moved == self.monster_image_down_attack:
+            screen.blit(self.monster_image_down_attack, self.monster_rect)
+
+        # Add the still images when both player and monster are not moving
+        # elif self.direction == 0:
+        #     if self.last_moved == BOUNDRY_LEFT:
+        #         screen.blit(self.monster_image_left_still, self.monster_rect)
+        #     elif self.last_moved == BOUNDRY_RIGHT:
+        #         screen.blit(self.monster_image_right_still, self.monster_rect)
+        #     elif self.last_moved == BOUNDRY_TOP:
+        #         screen.blit(self.monster_image_up_still, self.monster_rect)
+        #     elif self.last_moved == BOUNDRY_BOTTOM:
+        #         screen.blit(self.monster_image_down_still, self.monster_rect)
 
     def monster_collides_with(self, player_rect):
         if self.monster_rect.colliderect(player_rect):
@@ -242,17 +261,17 @@ class Monster1(pg.sprite.Sprite):
             if abs(dx) > abs(dy):
                 if dx > 0:
                     self.direction = 0
-                    screen.blit(self.monster_image_left_attack, self.monster_rect)
+                    self.last_moved = self.monster_image_right_attack
                 else:
                     self.direction = 0
-                    screen.blit(self.monster_image_right_attack, self.monster_rect)
+                    self.last_moved = self.monster_image_left_attack
             else:
                 if dy > 0:
                     self.direction = 0
-                    screen.blit(self.monster_image_down_attack, self.monster_rect)
+                    self.last_moved = self.monster_image_down_attack
                 else:
                     self.direction = 0
-                    screen.blit(self.monster_image_up_attack, self.monster_rect)
+                    self.last_moved = self.monster_image_up_attack
                     
      
 
