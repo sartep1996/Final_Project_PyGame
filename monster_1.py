@@ -5,7 +5,7 @@ from boundries import BOUNDRY_RIGHT, BOUNDRY_LEFT, BOUNDRY_BOTTOM, BOUNDRY_TOP
 CLOSE_DISTANCE_THRESHOLD = 140
 
 class Monster1(pg.sprite.Sprite):
-    def __init__(self, x, y, speed, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, position ):
+    def __init__(self, x, y, speed, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, position ):
         super().__init__()
         self.monster_image_still = pg.transform.scale(pg.image.load(monster_image_path_raw_down).convert_alpha(), (100, 100))
 
@@ -14,22 +14,29 @@ class Monster1(pg.sprite.Sprite):
         self.monster_image_down_still = pg.transform.scale(pg.image.load(monster_image_path_raw_down).convert_alpha(), (100, 100))
         self.monster_image_down_1 = pg.transform.scale(pg.image.load(monster_image_down_path_1).convert_alpha(), (100, 100))
         self.monster_image_down_2 = pg.transform.scale(pg.image.load(monster_image_down_path_2).convert_alpha(), (100, 100))
+        self.monster_image_down_attack =  pg.transform.scale(pg.image.load(monster_image_down_path_attack).convert_alpha(), (100, 100))
         
         # This is for player when he is moving up
         self.monster_image_up_still = pg.transform.scale(pg.image.load(monster_image_path_raw_up).convert_alpha(), (100, 100))
         self.monster_image_up_1 = pg.transform.scale(pg.image.load(monster_image_up_path_1).convert_alpha(), (100, 100))
         self.monster_image_up_2 = pg.transform.scale(pg.image.load(monster_image_up_path_2).convert_alpha(), (100, 100))
+        self.monster_image_up_attack =  pg.transform.scale(pg.image.load(monster_image_up_path_attack).convert_alpha(), (100, 100))
+
 
         # This is for player when he is moving left
         self.monster_image_left_still = pg.transform.scale(pg.image.load(monster_image_path_raw_left).convert_alpha(), (100, 100))
         self.monster_image_left_1 = pg.transform.scale(pg.image.load(monster_image_left_path_1).convert_alpha(), (100, 100))
         self.monster_image_left_2 = pg.transform.scale(pg.image.load(monster_image_left_path_2).convert_alpha(), (100, 100))
+        self.monster_image_left_attack =  pg.transform.scale(pg.image.load(monster_image_left_path_attack).convert_alpha(), (100, 100))
+
         
         #This is for player moving right
        
         self.monster_image_right_still = pg.transform.scale(pg.image.load(monster_image_path_raw_right).convert_alpha(), (100, 100))
         self.monster_image_right_1 = pg.transform.scale(pg.image.load(monster_image_right_path_1).convert_alpha(), (100, 100))
         self.monster_image_right_2 = pg.transform.scale(pg.image.load(monster_image_right_path_2).convert_alpha(), (100, 100))
+        self.monster_image_right_attack =  pg.transform.scale(pg.image.load(monster_image_right_path_attack).convert_alpha(), (100, 100))
+
         
         # The rest of the charackteristics
         self.monster_rect = self.monster_image_still.get_rect()
@@ -42,6 +49,7 @@ class Monster1(pg.sprite.Sprite):
         self.last_frame_time = time.time()
         self.should_follow_player = False
         self.patrol_mode = True
+        self.monster_is_attacking = False
         # self.check_collision = True
 
 
@@ -55,17 +63,24 @@ class Monster1(pg.sprite.Sprite):
         self.monster_rect.topleft = (x, y)
 
 
-    def monster_update(self, player_rect):
-
+    def monster_update(self, player_rect, screen):
+        
         self.monster_patrol_left_right()
-
         
         if self.should_follow_player:
             self.monster_follow_player(player_rect)
-
-        self.monster_collides_with(player_rect)
-        self.monster_animate()
         self.monster_animate_when_following(player_rect)
+        
+        self.monster_collides_with(player_rect)
+        
+        self.monster_animate()
+        
+        if self.monster_is_attacking:
+            self.monster_attack_player(player_rect, screen)
+            if self.animation_timer >= self.animation_delay:
+                self.monster_is_attacking = False
+        else:
+            self.monster_animate_when_following(player_rect)
     '''
     def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
     '''
@@ -179,6 +194,8 @@ class Monster1(pg.sprite.Sprite):
         
         self.folowing_monster_sprites_update(player_rect, distance)
 
+        
+
 
 
     def folowing_monster_sprites_update(self, player_rect, distance):
@@ -200,10 +217,23 @@ class Monster1(pg.sprite.Sprite):
                 self.direction = -1
                 self.last_moved = self.monster_image_up_still
 
-    def monster_attack_player(self, player_rect):
         player_vector = pg.math.Vector2(player_rect.center)
         monster_vector = pg.math.Vector2(self.monster_rect.center)
         player_distance = player_vector.distance_to(monster_vector)
+
+        if player_distance < CLOSE_DISTANCE_THRESHOLD:
+            self.monster_is_attacking = True
+        else:
+            self.monster_is_attacking = False
+
+    
+
+    def monster_attack_player(self, player_rect, screen):
+        player_vector = pg.math.Vector2(player_rect.center)
+        monster_vector = pg.math.Vector2(self.monster_rect.center)
+        player_distance = player_vector.distance_to(monster_vector)
+
+        self.monster_is_attacking = True
         
         dx = player_rect.center[0] - self.monster_rect.center[0]
         dy = player_rect.center[1] - self.monster_rect.center[1]
@@ -212,21 +242,19 @@ class Monster1(pg.sprite.Sprite):
             if abs(dx) > abs(dy):
                 if dx > 0:
                     self.direction = 0
-                    self.last_moved = self.monster_image_left_still
+                    screen.blit(self.monster_image_left_attack, self.monster_rect)
                 else:
                     self.direction = 0
-                    self.last_moved = self.monster_image_right_still
+                    screen.blit(self.monster_image_right_attack, self.monster_rect)
             else:
                 if dy > 0:
                     self.direction = 0
-                    self.last_moved = self.monster_image_down_still
+                    screen.blit(self.monster_image_down_attack, self.monster_rect)
                 else:
                     self.direction = 0
-                    self.last_moved = self.monster_image_up_still
-            
-
-        
-        
+                    screen.blit(self.monster_image_up_attack, self.monster_rect)
+                    
+     
 
      #responsible for animating charackter movement   
     def monster_animate(self):
@@ -263,24 +291,30 @@ class Monster1(pg.sprite.Sprite):
         monster_vector = pg.math.Vector2(self.monster_rect.center)
         player_distance = player_vector.distance_to(monster_vector)
         if player_distance < CLOSE_DISTANCE_THRESHOLD:
-            self.is_monster_image = True
+            self.is_monster_image = False
 
 
 
 monster_image_path_raw_down = 'Images/Monster_1_sprites/monster_down_still.png'
 monster_image_down_path_1 = 'Images/Monster_1_sprites/monster_down_1.png'
 monster_image_down_path_2 = 'Images/Monster_1_sprites/monster_down_2.png'
+monster_image_down_path_attack = 'Images/Monster_1_sprites/monster_down_attack.png'
 
 monster_image_path_raw_up = 'Images/Monster_1_sprites/monster_up_still.png'
 monster_image_up_path_1 = 'Images/Monster_1_sprites/monster_up_1.png'
 monster_image_up_path_2 = 'Images/Monster_1_sprites/monster_up_2.png'
+monster_image_up_path_attack = 'Images/Monster_1_sprites/monster_up_attack.png'
 
 monster_image_path_raw_left= 'Images/Monster_1_sprites/monster_left_still.png'
 monster_image_left_path_1 = 'Images/Monster_1_sprites/monster_left_1.png'
 monster_image_left_path_2 = 'Images/Monster_1_sprites/monster_left_2.png'
+monster_image_left_path_attack = 'Images/Monster_1_sprites/monster_left_attack.png'
+
 
 monster_image_path_raw_right= 'Images/Monster_1_sprites/monster_right_still.png'
 monster_image_right_path_1 = 'Images/Monster_1_sprites/monster_right_1.png'
 monster_image_right_path_2 = 'Images/Monster_1_sprites/monster_right_2.png'
+monster_image_right_path_attack = 'Images/Monster_1_sprites/monster_right_attack.png'
 
-monster1 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, (50, 50))
+
+monster1 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, (50, 50))
