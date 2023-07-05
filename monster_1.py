@@ -50,7 +50,6 @@ class Monster1(pg.sprite.Sprite):
         self.should_follow_player = False
         self.patrol_mode = True
         self.monster_is_attacking = False
-        self.attack_counter = 0
         
         # self.check_collision = True
 
@@ -241,7 +240,7 @@ class Monster1(pg.sprite.Sprite):
     
 
     def monster_attack_player(self, player_rect, screen):
-        frame_delay = 0.2
+        attack_duration = 400
         player_vector = pg.math.Vector2(player_rect.center)
         monster_vector = pg.math.Vector2(self.monster_rect.center)
         player_distance = player_vector.distance_to(monster_vector)
@@ -255,30 +254,30 @@ class Monster1(pg.sprite.Sprite):
             if abs(dx) > abs(dy):
                 if dx > 0:
                     self.direction = 0
-                    self.attack_counter += 1
-                    if self.attack_counter % 2 == 1:
+                    time_since_attack = pg.time.get_ticks() % (2 * attack_duration)
+                    if time_since_attack < attack_duration:
                         self.last_moved = self.monster_image_right_attack
                     else:
                         self.last_moved = self.monster_image_left_still
                 else:
                     self.direction = 0
-                    self.attack_counter += 1
-                    if self.attack_counter % 2 == 1:
+                    time_since_attack = pg.time.get_ticks() % (2 * attack_duration)
+                    if time_since_attack < attack_duration:
                         self.last_moved = self.monster_image_left_attack
                     else:
                         self.last_moved = self.monster_image_right_still
             else:
                 if dy > 0:
                     self.direction = 0
-                    self.attack_counter += 1
-                    if self.attack_counter % 2 == 1:
+                    time_since_attack = pg.time.get_ticks() % (2 * attack_duration)
+                    if time_since_attack < attack_duration:
                         self.last_moved = self.monster_image_down_attack
                     else:
                         self.last_moved = self.monster_image_down_still
                 else:
                     self.direction = 0
-                    self.attack_counter += 1
-                    if self.attack_counter % 2 == 1:
+                    time_since_attack = pg.time.get_ticks() % (2 * attack_duration)
+                    if time_since_attack < attack_duration:
                         self.last_moved = self.monster_image_up_attack
                     else:
                         self.last_moved = self.monster_image_up_still
