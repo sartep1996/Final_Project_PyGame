@@ -199,6 +199,32 @@ class Monster1(pg.sprite.Sprite):
             else:
                 self.direction = -1
                 self.last_moved = self.monster_image_up_still
+
+    def monster_attack_player(self, player_rect):
+        player_vector = pg.math.Vector2(player_rect.center)
+        monster_vector = pg.math.Vector2(self.monster_rect.center)
+        player_distance = player_vector.distance_to(monster_vector)
+        
+        dx = player_rect.center[0] - self.monster_rect.center[0]
+        dy = player_rect.center[1] - self.monster_rect.center[1]
+        
+        if player_distance < CLOSE_DISTANCE_THRESHOLD:
+            if abs(dx) > abs(dy):
+                if dx > 0:
+                    self.direction = 0
+                    self.last_moved = self.monster_image_left_still
+                else:
+                    self.direction = 0
+                    self.last_moved = self.monster_image_right_still
+            else:
+                if dy > 0:
+                    self.direction = 0
+                    self.last_moved = self.monster_image_down_still
+                else:
+                    self.direction = 0
+                    self.last_moved = self.monster_image_up_still
+            
+
         
         
 
