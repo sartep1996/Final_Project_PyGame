@@ -51,6 +51,7 @@ class Monster1(pg.sprite.Sprite):
         self.patrol_mode = True
         self.monster_is_attacking = False
         self.attack_counter = 0
+        
         # self.check_collision = True
 
 
@@ -156,16 +157,6 @@ class Monster1(pg.sprite.Sprite):
         elif self.last_moved == self.monster_image_down_attack:
             screen.blit(self.monster_image_down_attack, self.monster_rect)
 
-        # Add the still images when both player and monster are not moving
-        # elif self.direction == 0:
-        #     if self.last_moved == BOUNDRY_LEFT:
-        #         screen.blit(self.monster_image_left_still, self.monster_rect)
-        #     elif self.last_moved == BOUNDRY_RIGHT:
-        #         screen.blit(self.monster_image_right_still, self.monster_rect)
-        #     elif self.last_moved == BOUNDRY_TOP:
-        #         screen.blit(self.monster_image_up_still, self.monster_rect)
-        #     elif self.last_moved == BOUNDRY_BOTTOM:
-        #         screen.blit(self.monster_image_down_still, self.monster_rect)
 
     def monster_collides_with(self, player_rect):
         if self.monster_rect.colliderect(player_rect):
@@ -250,6 +241,7 @@ class Monster1(pg.sprite.Sprite):
     
 
     def monster_attack_player(self, player_rect, screen):
+        frame_delay = 0.2
         player_vector = pg.math.Vector2(player_rect.center)
         monster_vector = pg.math.Vector2(self.monster_rect.center)
         player_distance = player_vector.distance_to(monster_vector)
@@ -267,14 +259,14 @@ class Monster1(pg.sprite.Sprite):
                     if self.attack_counter % 2 == 1:
                         self.last_moved = self.monster_image_right_attack
                     else:
-                        self.last_moved = self.monster_image_right_still
+                        self.last_moved = self.monster_image_left_still
                 else:
                     self.direction = 0
                     self.attack_counter += 1
                     if self.attack_counter % 2 == 1:
                         self.last_moved = self.monster_image_left_attack
                     else:
-                        self.last_moved = self.monster_image_left_still
+                        self.last_moved = self.monster_image_right_still
             else:
                 if dy > 0:
                     self.direction = 0
@@ -290,7 +282,7 @@ class Monster1(pg.sprite.Sprite):
                         self.last_moved = self.monster_image_up_attack
                     else:
                         self.last_moved = self.monster_image_up_still
-
+        
 
      #responsible for animating charackter movement   
     def monster_animate(self):
