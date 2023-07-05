@@ -50,6 +50,7 @@ class Monster1(pg.sprite.Sprite):
         self.should_follow_player = False
         self.patrol_mode = True
         self.monster_is_attacking = False
+        self.attack_counter = 0
         # self.check_collision = True
 
 
@@ -190,6 +191,7 @@ class Monster1(pg.sprite.Sprite):
                     self.last_moved = self.monster_image_up_still
 
 
+
     def monster_follow_player(self, player_rect):
         LERP_FACTOR      = 0.05
         minimum_distance = 127
@@ -261,19 +263,34 @@ class Monster1(pg.sprite.Sprite):
             if abs(dx) > abs(dy):
                 if dx > 0:
                     self.direction = 0
-                    self.last_moved = self.monster_image_right_attack
+                    self.attack_counter += 1
+                    if self.attack_counter % 2 == 1:
+                        self.last_moved = self.monster_image_right_attack
+                    else:
+                        self.last_moved = self.monster_image_right_still
                 else:
                     self.direction = 0
-                    self.last_moved = self.monster_image_left_attack
+                    self.attack_counter += 1
+                    if self.attack_counter % 2 == 1:
+                        self.last_moved = self.monster_image_left_attack
+                    else:
+                        self.last_moved = self.monster_image_left_still
             else:
                 if dy > 0:
                     self.direction = 0
-                    self.last_moved = self.monster_image_down_attack
+                    self.attack_counter += 1
+                    if self.attack_counter % 2 == 1:
+                        self.last_moved = self.monster_image_down_attack
+                    else:
+                        self.last_moved = self.monster_image_down_still
                 else:
                     self.direction = 0
-                    self.last_moved = self.monster_image_up_attack
-                    
-     
+                    self.attack_counter += 1
+                    if self.attack_counter % 2 == 1:
+                        self.last_moved = self.monster_image_up_attack
+                    else:
+                        self.last_moved = self.monster_image_up_still
+
 
      #responsible for animating charackter movement   
     def monster_animate(self):
