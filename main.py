@@ -53,6 +53,7 @@ while run:
     # screen.blit(monster1, monster1.monster_rect)
     monster1.draw_monster(screen)
     player.draw(screen)
+    player.draw_health_bar_outline(screen, 8, 8)
     player.draw_health_bar(screen, 10, 10, player.health)
    
     
