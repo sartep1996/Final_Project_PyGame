@@ -96,11 +96,21 @@ class Player(pg.sprite.Sprite):
         self.movement_speed = 9
         self.last_moved = ''
         self.last_frame_time = time.time()
+        self.health = 100
 
         
     
     def set_position(self, x, y):
         self.player_rect.topleft = (x, y)
+
+
+    def player_update(self, screen):
+        
+        self.main_player_movement()
+        self.animate()
+        # self.take_damage()
+        self.draw_health_bar(screen, 50, 50, self.health)
+
 
     def draw(self, screen):
 
@@ -235,6 +245,26 @@ class Player(pg.sprite.Sprite):
             if self.animation_timer >= self.animation_delay:
                 self.animation_timer = 0
                 self.is_player_image = True
+
+
+    def draw_health_bar(self, screen, x, y, health):
+        bar_width = 100
+        bar_height = 10
+        fill_color = (255, 0, 0)
+        outline_color = (255, 255, 255)
+        if health <0:
+            health = 0
+        
+        health_bar_rect = pg.Rect(x, y, bar_width, bar_height)
+        pg.draw.rect(screen, outline_color, health_bar_rect)
+        fill_width = health * bar_width // 100  # Calculate the width based on health percentage
+        fill_rect = pg.Rect(x, y, fill_width, bar_height)
+        pg.draw.rect(screen, fill_color, fill_rect)
+
+    def take_damage(self, amount):
+        self.health -= amount
+        if self.health <= 0:
+            pass
     
 
 player_image_path_raw = 'Images/Player_sprites/player_still.png'

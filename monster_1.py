@@ -182,28 +182,62 @@ class Monster1(pg.sprite.Sprite):
 
 
 
-    def monster_follow_player(self, player_rect):
-        LERP_FACTOR      = 0.05
-        minimum_distance = 127
-        maximum_distance = 150
+    
+    # def monster_follow_player(self, player_rect):
+    #     LERP_FACTOR      = 0.05
+    #     minimum_distance = 127
+    #     maximum_distance = 150
         
-        player_vector = pg.math.Vector2(player_rect.center)
-        monster_vector = pg.math.Vector2(self.monster_rect.center)
-        new_monster_vector = pg.math.Vector2(self.monster_rect.center)
+    #     player_vector = pg.math.Vector2(player_rect.center)
+    #     monster_vector = pg.math.Vector2(self.monster_rect.center)
+    #     new_monster_vector = pg.math.Vector2(self.monster_rect.center)
        
-        distance = monster_vector.distance_to(player_vector)
-        direction_vector = player_vector - monster_vector
-        if distance > minimum_distance:
-            direction_vector /= distance
-            min_step = max(0, distance - maximum_distance)
-            max_step = distance - minimum_distance
-            step_distance = min_step + (max_step - min_step) * LERP_FACTOR
-            new_monster_vector = monster_vector + direction_vector * step_distance
+    #     distance = monster_vector.distance_to(player_vector)
+    #     direction_vector = player_vector - monster_vector
+    #     if distance > minimum_distance:
+    #         direction_vector /= distance
+    #         min_step = max(0, distance - maximum_distance)
+    #         max_step = distance - minimum_distance
+    #         step_distance = min_step + (max_step - min_step) * LERP_FACTOR
+    #         new_monster_vector = monster_vector + direction_vector * step_distance
             
-        self.monster_rect.center = (new_monster_vector.x, new_monster_vector.y)
+    #     self.monster_rect.center = (new_monster_vector.x, new_monster_vector.y)
 
         
-        self.folowing_monster_sprites_update(player_rect, distance)
+    #     self.folowing_monster_sprites_update(player_rect, distance)
+
+
+    def monster_follow_player(self, player_rect):
+            LERP_FACTOR      = 0.05
+            minimum_distance = 125
+            maximum_distance = 150
+            stop_distance = 70
+            gap_factor = 5
+            speed_factor = 0.25
+
+            
+            player_vector = pg.math.Vector2(player_rect.center)
+            monster_vector = pg.math.Vector2(self.monster_rect.center)
+            new_monster_vector = pg.math.Vector2(self.monster_rect.center)
+        
+            distance = monster_vector.distance_to(player_vector)
+            direction_vector = player_vector - monster_vector
+            
+            if distance > minimum_distance:
+                direction_vector /= distance
+                min_step = max(0, distance - maximum_distance * gap_factor)
+                max_step = max(stop_distance, distance - minimum_distance)
+                step_distance = min_step + (max_step - min_step) * LERP_FACTOR
+                step_distance *= speed_factor
+                new_monster_vector = monster_vector + direction_vector * step_distance
+
+        
+                    
+            self.monster_rect.center = (new_monster_vector.x, new_monster_vector.y)
+
+            
+            self.folowing_monster_sprites_update(player_rect, distance)
+
 
         
 

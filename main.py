@@ -36,12 +36,12 @@ while run:
         if event.type == pg.QUIT:
             run = False
 
-    player.main_player_movement()
-    player.animate()
+    player.player_update(screen)
     
     player_rect = player.player_rect # Assuming you have a player object with a rect attribute
     
-    monster1.monster_update(player_rect, screen)
+    monster1.monster_update(player.player_rect, screen)
+    
 
     
 
