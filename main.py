@@ -19,7 +19,7 @@ player.set_position(250, 250)
 from monster_1 import monster1
 monster1.set_position(200, 200)
 from background_objects import plane_b_object
-from collision_functions import collision_with_static_object, collision_with_moving_object
+from global_functions import collision_with_static_object, collision_with_moving_object, player_taking_damage
 from boundries import boundries
 
 screen_rect = screen.get_rect()
@@ -43,7 +43,9 @@ while run:
     collision_with_static_object(player.player_rect, plane_b_object_rect, 10)
     collision_with_static_object(monster1.monster_rect, plane_b_object_rect, 10)
     collision_with_moving_object(player.player_rect, monster1.monster_rect, 10, player.movement_speed, monster1.movement_speed,  screen_rect)
-    
+    player_taking_damage(player.health, monster1.attack_damage)
+    damage = monster1.attack_damage
+    player.take_damage(damage, screen)
         
     #black screen fill for default, all images are on top of it
     screen.fill((0, 0, 0))
@@ -53,7 +55,6 @@ while run:
     # screen.blit(monster1, monster1.monster_rect)
     monster1.draw_monster(screen)
     player.draw(screen)
-    player.draw_health_bar_outline(screen, 8, 8)
     player.draw_health_bar(screen, 10, 10, player.health)
    
     

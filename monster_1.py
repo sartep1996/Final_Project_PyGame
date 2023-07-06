@@ -44,12 +44,13 @@ class Monster1(pg.sprite.Sprite):
         self.is_monster_image = True
         self.animation_timer = 0
         self.animation_delay = 150
-        self.movement_speed = 4
+        self.movement_speed = 2
         self.last_moved = ''
         self.last_frame_time = time.time()
         self.should_follow_player = False
         self.patrol_mode = True
         self.monster_is_attacking = False
+        self.attack_damage = 10
         
         # self.check_collision = True
 
@@ -89,7 +90,7 @@ class Monster1(pg.sprite.Sprite):
     def monster_patrol_left_right(self):
         
         if self.patrol_mode:
-            self.x += self.speed * self.direction
+            self.x += self.movement_speed * self.direction
             self.monster_rect.x = self.x 
         
     
@@ -315,6 +316,8 @@ class Monster1(pg.sprite.Sprite):
                         self.last_moved = self.monster_image_up_attack
                     else:
                         self.last_moved = self.monster_image_up_still
+            
+        return self.attack_damage
         
 
      #responsible for animating charackter movement   

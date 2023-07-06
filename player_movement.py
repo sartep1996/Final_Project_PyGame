@@ -252,30 +252,27 @@ class Player(pg.sprite.Sprite):
         bar_height = 10
         fill_color = (0, 255, 0)
         outline_color = (255, 255, 255)
-        if health <0:
-            health = 0
+        if health <0: health = 0
         
-    
+
+        outline_rect = pg.Rect(x - 3, y - 3 , 3 + bar_width +3, 3+ bar_height +3)
+        pg.draw.rect(screen, outline_color, outline_rect )
+
         health_bar_rect = pg.Rect(x, y, bar_width, bar_height)
         pg.draw.rect(screen, outline_color, health_bar_rect)
         fill_width = health * bar_width // 100  # Calculate the width based on health percentage
         fill_rect = pg.Rect(x, y, fill_width, bar_height)
         pg.draw.rect(screen, fill_color, fill_rect)
 
-    def draw_health_bar_outline(self, screen, x, y):
-        bar_width = 100
-        bar_height = 10
-        outline_color = (255, 255, 255)
 
-        
-        outline_rect = pg.Rect(x, y, 3 + bar_width +3, 3+ bar_height +3)
-        pg.draw.rect(screen, outline_color, outline_rect )
-
-
-    def take_damage(self, amount):
+    def take_damage(self, amount, screen):
         self.health -= amount
         if self.health <= 0:
-            pass
+            self.health = 0
+       
+        self.draw_health_bar(screen, 10, 10, self.health)       
+
+        return self.health
     
 
 player_image_path_raw = 'Images/Player_sprites/player_still.png'

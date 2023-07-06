@@ -62,3 +62,11 @@ def collision_with_moving_object(obj1, obj2, coltol, player_speed, monster_speed
             obj2.top = BOUNDRY_TOP
         elif obj2.bottom > BOUNDRY_BOTTOM:
             obj2.bottom = BOUNDRY_BOTTOM
+
+
+def player_taking_damage(health, damage):
+    health -= damage
+    if health <= 0:
+        health = 0
+
+    return health
