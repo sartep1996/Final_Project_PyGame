@@ -37,22 +37,11 @@ while run:
             run = False
 
     player.player_update(screen)
-    
-    player_rect = player.player_rect # Assuming you have a player object with a rect attribute
-    
     monster1.monster_update(player.player_rect, screen)
-    
-
-    
-
     boundries(player.player_rect)
     boundries(monster1.monster_rect)
-    
-    
-
     collision_with_static_object(player.player_rect, plane_b_object_rect, 10)
     collision_with_static_object(monster1.monster_rect, plane_b_object_rect, 10)
-    
     collision_with_moving_object(player.player_rect, monster1.monster_rect, 10, player.movement_speed, monster1.movement_speed,  screen_rect)
     
         
@@ -60,13 +49,11 @@ while run:
     screen.fill((0, 0, 0))
     #adding background of level 1
     screen.blit(background_lvl_1, (0,0))
-
     screen.blit(plane_b_object, plane_b_object_rect)
     # screen.blit(monster1, monster1.monster_rect)
-
-    
     monster1.draw_monster(screen)
     player.draw(screen)
+    player.draw_health_bar(screen, 10, 10, player.health)
    
     
     pg.display.update()

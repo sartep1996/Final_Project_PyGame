@@ -109,7 +109,7 @@ class Player(pg.sprite.Sprite):
         self.main_player_movement()
         self.animate()
         # self.take_damage()
-        self.draw_health_bar(screen, 50, 50, self.health)
+        # self.draw_health_bar(screen, 50, 50, self.health)
 
 
     def draw(self, screen):
