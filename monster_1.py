@@ -50,7 +50,7 @@ class Monster1(pg.sprite.Sprite):
         self.should_follow_player = False
         self.patrol_mode = True
         self.monster_is_attacking = False
-        self.attack_damage = 10
+        self.attack_damage = 0
         
         # self.check_collision = True
 
@@ -317,8 +317,12 @@ class Monster1(pg.sprite.Sprite):
                     else:
                         self.last_moved = self.monster_image_up_still
             
-        return self.attack_damage
-        
+            self.attack_damage = 0.5
+            return self.attack_damage 
+         
+                
+        return 0
+
 
      #responsible for animating charackter movement   
     def monster_animate(self):

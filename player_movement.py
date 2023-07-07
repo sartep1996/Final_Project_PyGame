@@ -96,7 +96,9 @@ class Player(pg.sprite.Sprite):
         self.movement_speed = 9
         self.last_moved = ''
         self.last_frame_time = time.time()
-        self.health = 100
+
+        self.max_health = 100
+        self.health = self.max_health
 
         
     
@@ -247,32 +249,37 @@ class Player(pg.sprite.Sprite):
                 self.is_player_image = True
 
 
-    def draw_health_bar(self, screen, x, y, health):
+    def draw_health_bar(self, screen, x, y):        
+
         bar_width = 100
         bar_height = 10
         fill_color = (0, 255, 0)
         outline_color = (255, 255, 255)
-        if health <0: health = 0
-        
+        draining_health_fill = (255, 0, 0)
+        if self.health <0: self.health = 0
+        ratio = self.health  / self.max_health 
 
-        outline_rect = pg.Rect(x - 3, y - 3 , 3 + bar_width +3, 3+ bar_height +3)
+        outline_rect = pg.Rect(x - 3, y - 3 , bar_width + 6, bar_height + 6)
         pg.draw.rect(screen, outline_color, outline_rect )
 
         health_bar_rect = pg.Rect(x, y, bar_width, bar_height)
-        pg.draw.rect(screen, outline_color, health_bar_rect)
-        fill_width = health * bar_width // 100  # Calculate the width based on health percentage
+        pg.draw.rect(screen, draining_health_fill, health_bar_rect)
+       
+        fill_width = bar_width * ratio
         fill_rect = pg.Rect(x, y, fill_width, bar_height)
         pg.draw.rect(screen, fill_color, fill_rect)
 
 
-    def take_damage(self, amount, screen):
+    def take_damage(self, amount):
         self.health -= amount
         if self.health <= 0:
             self.health = 0
-       
-        self.draw_health_bar(screen, 10, 10, self.health)       
 
         return self.health
+    
+    def player_dies(self):
+        if self.health == 0:
+            self.last_moved
     
 
 player_image_path_raw = 'Images/Player_sprites/player_still.png'
