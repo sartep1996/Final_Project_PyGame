@@ -3,7 +3,7 @@ import time
 
 #test player
 class Player(pg.sprite.Sprite):
-    def __init__(self, player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, position ):
+    def __init__(self, player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, player_image_death_path_1, player_image_death_path_2, player_image_death_path_final, position ):
         super().__init__()
         self.player_still_raw = pg.image.load(player_image_path_raw).convert_alpha()
 
@@ -76,7 +76,7 @@ class Player(pg.sprite.Sprite):
         self.player_image_upleft_2 = pg.transform.scale(self.player_image_upleft_2_raw, (100, 100))
 
 
-         #This is forplayer moving upright
+         #This is for player moving upright
 
         self.player_image_upright_still_raw = pg.image.load(player_image_path_raw_upright).convert_alpha()
         self.player_image_upright_1_raw = pg.image.load(player_image_upright_path_1).convert_alpha()
@@ -86,6 +86,15 @@ class Player(pg.sprite.Sprite):
         self.player_image_upright_1 = pg.transform.scale(self.player_image_upright_1_raw, (100, 100))
         self.player_image_upright_2 = pg.transform.scale(self.player_image_upright_2_raw, (100, 100))
 
+
+        #This when player dies
+        self.player_image_death_1_raw = pg.image.load(player_image_death_path_1).convert_alpha()
+        self.player_image_death_2_raw = pg.image.load(player_image_death_path_2).convert_alpha()
+        self.player_image_death_final_raw = pg.image.load(player_image_death_path_final).convert_alpha()
+        
+        self.player_image_death_1 = pg.transform.scale(self.player_image_death_1_raw , (100, 100))
+        self.player_image_death_2 = pg.transform.scale(self.player_image_death_2_raw, (100, 100))
+        self.player_image_death_final= pg.transform.scale(self.player_image_death_final_raw, (100, 100))
 
         # The rest of the charackteristics
         self.player_rect = self.player_image_still.get_rect()
@@ -186,6 +195,20 @@ class Player(pg.sprite.Sprite):
                 screen.blit(self.player_image_still, self.player_rect)
 
 
+        elif self.last_moved == self.player_image_death_1:
+            screen.blit(self.player_image_death_1, self.player_rect)
+        
+        elif self.last_moved == self.player_image_death_2:
+            screen.blit(self.player_image_death_2, self.player_rect)
+
+        elif self.last_moved == self.player_image_death_final:
+            screen.blit(self.player_image_death_final, self.player_rect)
+
+
+
+
+
+
 
     #responsible for player movement
     def main_player_movement(self):
@@ -276,10 +299,52 @@ class Player(pg.sprite.Sprite):
             self.health = 0
 
         return self.health
+
+            
+    def draw_player_death_animation(self):
+        self.is_player_image = False
+        death_duration = 400
+        death_animation_frames = [self.player_image_death_1, self.player_image_death_2, self.player_image_death_final]
+        for frame in death_animation_frames:
+            self.last_moved = frame
+            death_animation = pg.time.get_ticks() % (2 * death_duration)
+            
+            
+    def draw_player_death_animation(self):
+        self.is_player_image = False
+        death_duration = 400
+        animation_time = pg.time.get_ticks() % (3 * death_duration)
+        frame_index = animation_time // death_duration
+
+        if frame_index == 0:
+            self.last_moved = self.player_image_death_1
+            self.movement_speed = 0
+        elif frame_index == 1:
+            self.last_moved = self.player_image_death_2
+            self.movement_speed = 0
+        else:
+            self.last_moved = self.player_image_death_final
+            self.movement_speed = 0
+
+            
+        
+        
+        
+        # if frame_index == 0:
+        #     self.last_moved = self.player_image_death_1
+        #     self.movement_speed = 0
+        # elif frame_index == 1:
+        #     self.last_moved = self.player_image_death_2
+        #     self.movement_speed = 0
+        
+
+
+
+        
+                        
     
-    def player_dies(self):
-        if self.health == 0:
-            self.last_moved
+    
+        
     
 
 player_image_path_raw = 'Images/Player_sprites/player_still.png'
@@ -314,6 +379,10 @@ player_image_path_raw_downright= 'Images/Player_sprites/player_downright_still.p
 player_image_downright_path_1 = 'Images/Player_sprites/player_downright_1.png'
 player_image_downright_path_2 = 'Images/Player_sprites/player_downright_2.png'
 
+player_image_death_path_1 = 'Images/Player_sprites/player_death_1.png'
+player_image_death_path_2 = 'Images/Player_sprites/player_death_2.png'
+player_image_death_path_final = 'Images/Player_sprites/player_death_final.png'
 
-player = Player(player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, (50, 50))
+
+player = Player(player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2,player_image_death_path_1, player_image_death_path_2, player_image_death_path_final,  (50, 50))
 

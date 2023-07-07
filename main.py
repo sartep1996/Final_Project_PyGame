@@ -25,7 +25,6 @@ from boundries import boundries
 screen_rect = screen.get_rect()
 plane_b_object_rect = plane_b_object.get_rect()
 plane_b_object_rect.topleft = (40, 400)
-# monster1_rect = monster1.get_rect()
 
 
 run = True
@@ -50,16 +49,19 @@ while run:
     collision_with_static_object(monster1.monster_rect, plane_b_object_rect, 10)
     collision_with_moving_object(player.player_rect, monster1.monster_rect, 10, player.movement_speed, monster1.movement_speed,  screen_rect)
     
-    print(player.health)
     
     #black screen fill for default, all images are on top of it
     screen.fill((0, 0, 0))
     #adding background of level 1
     screen.blit(background_lvl_1, (0,0))
-    screen.blit(plane_b_object, plane_b_object_rect)
-    # screen.blit(monster1, monster1.monster_rect)
+    screen.blit(plane_b_object, plane_b_object_rect) 
     monster1.draw_monster(screen)
     
+    if player.health == 0:
+        player.draw_player_death_animation()
+        
+
+
     player.draw(screen)
     player.draw_health_bar(screen, 10, 10)
    

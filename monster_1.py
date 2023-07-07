@@ -317,7 +317,7 @@ class Monster1(pg.sprite.Sprite):
                     else:
                         self.last_moved = self.monster_image_up_still
             
-            self.attack_damage = 0.5
+            self.attack_damage = 2
             return self.attack_damage 
          
                 
