@@ -105,6 +105,8 @@ class Player(pg.sprite.Sprite):
         self.movement_speed = 9
         self.last_moved = ''
         self.last_frame_time = time.time()
+        self.last_image = False
+        self.frame_index = 0
 
         self.max_health = 100
         self.health = self.max_health
@@ -117,6 +119,7 @@ class Player(pg.sprite.Sprite):
 
     def player_update(self, screen):
         
+        self.allow_movement = True
         self.main_player_movement()
         self.animate()
         # self.take_damage()
@@ -300,51 +303,47 @@ class Player(pg.sprite.Sprite):
 
         return self.health
 
-            
-    def draw_player_death_animation(self):
-        self.is_player_image = False
-        death_duration = 400
-        death_animation_frames = [self.player_image_death_1, self.player_image_death_2, self.player_image_death_final]
-        for frame in death_animation_frames:
-            self.last_moved = frame
-            death_animation = pg.time.get_ticks() % (2 * death_duration)
-            
-            
+                
+    
+   
+
+    # def draw_player_death_animation(self):
+    #         self.is_player_image = False
+    #         death_duration = 400
+    #         animation_time = pg.time.get_ticks() % (3 * death_duration)
+
+    #         if self.last_image == False:
+    #             self.frame_index = animation_time // death_duration
+
+    #         if self.frame_index == 0:
+    #             self.last_moved = self.player_image_death_1
+    #             self.movement_speed = 0
+    #         elif self.frame_index == 1:
+    #             self.last_moved = self.player_image_death_2
+    #             self.movement_speed = 0
+    #             self.last_image = True
+    #         elif self.last_image == True:
+    #             self.last_moved = self.player_image_death_final
+    #             self.movement_speed = 0    
+    
     def draw_player_death_animation(self):
         self.is_player_image = False
         death_duration = 400
         animation_time = pg.time.get_ticks() % (3 * death_duration)
-        frame_index = animation_time // death_duration
 
-        if frame_index == 0:
-            self.last_moved = self.player_image_death_1
+        if self.last_image:
             self.movement_speed = 0
-        elif frame_index == 1:
-            self.last_moved = self.player_image_death_2
-            self.movement_speed = 0
-        else:
             self.last_moved = self.player_image_death_final
+
+        else:
+            self.frame_index = animation_time // death_duration
             self.movement_speed = 0
-
-            
-        
-        
-        
-        # if frame_index == 0:
-        #     self.last_moved = self.player_image_death_1
-        #     self.movement_speed = 0
-        # elif frame_index == 1:
-        #     self.last_moved = self.player_image_death_2
-        #     self.movement_speed = 0
-        
-
-
-
-        
-                        
-    
-    
-        
+            if self.frame_index == 0:
+                self.last_moved = self.player_image_death_1
+                self.movement_speed = 0
+            elif self.frame_index == 1:
+                self.last_moved = self.player_image_death_2
+                self.last_image = True
     
 
 player_image_path_raw = 'Images/Player_sprites/player_still.png'
