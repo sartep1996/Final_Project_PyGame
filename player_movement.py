@@ -303,28 +303,6 @@ class Player(pg.sprite.Sprite):
 
         return self.health
 
-                
-    
-   
-
-    # def draw_player_death_animation(self):
-    #         self.is_player_image = False
-    #         death_duration = 400
-    #         animation_time = pg.time.get_ticks() % (3 * death_duration)
-
-    #         if self.last_image == False:
-    #             self.frame_index = animation_time // death_duration
-
-    #         if self.frame_index == 0:
-    #             self.last_moved = self.player_image_death_1
-    #             self.movement_speed = 0
-    #         elif self.frame_index == 1:
-    #             self.last_moved = self.player_image_death_2
-    #             self.movement_speed = 0
-    #             self.last_image = True
-    #         elif self.last_image == True:
-    #             self.last_moved = self.player_image_death_final
-    #             self.movement_speed = 0    
     
     def draw_player_death_animation(self):
         self.is_player_image = False
@@ -344,6 +322,7 @@ class Player(pg.sprite.Sprite):
             elif self.frame_index == 1:
                 self.last_moved = self.player_image_death_2
                 self.last_image = True
+            
     
 
 player_image_path_raw = 'Images/Player_sprites/player_still.png'

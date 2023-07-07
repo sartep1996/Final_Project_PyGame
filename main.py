@@ -56,7 +56,7 @@ while run:
     screen.blit(background_lvl_1, (0,0))
     screen.blit(plane_b_object, plane_b_object_rect) 
     monster1.draw_monster(screen)
-    
+
     if player.health == 0:
         player.draw_player_death_animation()
         
