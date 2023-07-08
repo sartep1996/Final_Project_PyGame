@@ -9,7 +9,7 @@ def pause(screen):
     pg.init()
     paused = True
 
-    def get_font(size): # Returns Press-Start-2P in the desired size
+    def get_font(size): 
         return pg.font.Font('assets/fonts/Rhuma Sinera Regular.ttf', size)
 
 
@@ -36,19 +36,33 @@ def pause(screen):
     SCREEN.blit(PAUSE_MENU_TEXT, PAUSE_MENU_RECT)
 
     while paused:
+        PAUSE_MENU_MOUSE_POS = pg.mouse.get_pos()
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
+                return False
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_p:
+                    paused = False
+                    return True
+                
+
+
+
             if event.type == pg.MOUSEBUTTONDOWN:
                 if CONTINUE_BUTTON.checkForInput(PAUSE_MENU_MOUSE_POS):
-                    pause(screen)
+                    paused = False
+          
         
                 if QUIT_TO_MENU.checkForInput(PAUSE_MENU_MOUSE_POS):
                     return
                 
         screen.blit(PAUSE_MENU_TEXT, PAUSE_MENU_RECT)
+        CONTINUE_BUTTON.changeColor(PAUSE_MENU_MOUSE_POS)
         CONTINUE_BUTTON.update(screen)
+        QUIT_TO_MENU.changeColor(PAUSE_MENU_MOUSE_POS)
         QUIT_TO_MENU.update(screen)
+
                 
         pg.display.update()
 
