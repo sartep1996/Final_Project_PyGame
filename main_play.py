@@ -40,10 +40,13 @@ def main_game_lvl_1():
                 run = False
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_p:
-                    paused = not paused
+                    paused = True
 
         if paused:
-            pause(screen)
+            run = pause(screen)
+        
+
+            
 
         player.player_update(screen)
 

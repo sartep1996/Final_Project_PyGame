@@ -44,14 +44,10 @@ def pause(screen):
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_p:
                     paused = False
-                    return True
-                
-
-
-
+            
             if event.type == pg.MOUSEBUTTONDOWN:
                 if CONTINUE_BUTTON.checkForInput(PAUSE_MENU_MOUSE_POS):
-                    paused = False
+                    return paused == False
           
         
                 if QUIT_TO_MENU.checkForInput(PAUSE_MENU_MOUSE_POS):
