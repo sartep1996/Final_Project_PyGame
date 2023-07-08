@@ -8,7 +8,6 @@ pg.display.set_caption("MENU")
 
 BACKGROUNG = pg.image.load('Images/Background/menu_background.png')
 
-from main_play import main_game_lvl_1
 from button import Button
 
 
@@ -17,6 +16,7 @@ def get_font(size): # Returns Press-Start-2P in the desired size
 
 
 def main_menu():
+    from main_play import main_game_lvl_1
     while True:
         SCREEN.blit(BACKGROUNG, (0, 0))
 
@@ -61,4 +61,6 @@ def main_menu():
 
         pg.display.update()
 
-main_menu()
+
+if __name__ == "__main__":
+    main_menu()

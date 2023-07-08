@@ -1,4 +1,5 @@
 import pygame as pg
+from pause import pause
 
 
 def main_game_lvl_1():
@@ -28,6 +29,7 @@ def main_game_lvl_1():
     plane_b_object_rect = plane_b_object.get_rect()
     plane_b_object_rect.topleft = (40, 400)
 
+    paused = False
 
     run = True
     while run:
@@ -36,6 +38,12 @@ def main_game_lvl_1():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 run = False
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_p:
+                    paused = not paused
+
+        if paused:
+            pause(screen)
 
         player.player_update(screen)
 
@@ -70,3 +78,6 @@ def main_game_lvl_1():
         pg.display.update()
         
     pg.quit()
+
+if __name__ == "__main__":
+    main_game_lvl_1()
