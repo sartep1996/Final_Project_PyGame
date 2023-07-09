@@ -5,6 +5,7 @@ from button import Button
 
 
 def pause(screen):
+    from main_menu import main_menu
     pg.init()
     paused = True
 
@@ -49,7 +50,7 @@ def pause(screen):
                     paused = False
 
                 if QUIT_TO_MENU.checkForInput(PAUSE_MENU_MOUSE_POS):
-                    return "QUIT_TO_MENU"
+                    main_menu()
                 
         screen.blit(PAUSE_MENU_TEXT, PAUSE_MENU_RECT)
         CONTINUE_BUTTON.changeColor(PAUSE_MENU_MOUSE_POS)
