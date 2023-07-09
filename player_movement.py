@@ -323,6 +323,10 @@ class Player(pg.sprite.Sprite):
                 self.last_moved = self.player_image_death_2
                 self.last_image = True
             
+    def reset(self, x, y):
+        self.set_position( x, y)
+        self.player_rect.topleft = (x, y)
+        self.health = 100
     
 
 player_image_path_raw = 'Images/Player_sprites/player_still.png'

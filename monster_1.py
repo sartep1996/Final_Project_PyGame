@@ -181,6 +181,11 @@ class Monster1(pg.sprite.Sprite):
                     self.direction = 0
                     self.last_moved = self.monster_image_up_still
 
+    def reset(self, player_rect, screen):
+        self.monster_update(player_rect, screen)
+
+            
+
 
 
     

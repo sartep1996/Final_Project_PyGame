@@ -17,19 +17,19 @@ def pause(screen):
     PAUSE_MENU_MOUSE_POS = pg.mouse.get_pos()
 
     PAUSE_MENU_TEXT = get_font(100).render("PAUSE", True, "#b68f40")
-    PAUSE_MENU_RECT = PAUSE_MENU_TEXT.get_rect(center=(540, 100))
+    PAUSE_MENU_RECT = PAUSE_MENU_TEXT.get_rect(center=(400, 100))
 
-    play_image_raw = pg.image.load("assets/fonts/Play Butto for game.png")
+    play_image_raw = pg.image.load("assets/fonts/text_background.png")
     play_image = pg.transform.scale(play_image_raw.convert_alpha(), (300, 100))
         
-    quit_image_raw = pg.image.load("assets/fonts/Quit button for game.png")
-    quit_image = pg.transform.scale(quit_image_raw.convert_alpha(), (300, 100))
+    quit_image_raw = pg.image.load("assets/fonts/text_background.png")
+    quit_image = pg.transform.scale(quit_image_raw.convert_alpha(), (400, 100))
 
-    CONTINUE_BUTTON = Button(play_image, pos=(340, 250),
+    CONTINUE_BUTTON = Button(play_image, pos=(400, 280),
                 text_input="CONTINUE", font=get_font(75), base_color="#d7fcd4", hovering_color="Black")
 
             
-    QUIT_TO_MENU = Button(quit_image, pos=(340, 550), 
+    QUIT_TO_MENU = Button(quit_image, pos=(400, 380), 
                 text_input="QUIT TO MENU", font=get_font(75), base_color="#d7fcd4", hovering_color="Black")
 
     
