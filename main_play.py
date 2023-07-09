@@ -29,6 +29,7 @@ def main_game_lvl_1():
     plane_b_object_rect = plane_b_object.get_rect()
     plane_b_object_rect.topleft = (40, 400)
 
+    global paused
     paused = False
 
     run = True
@@ -41,12 +42,12 @@ def main_game_lvl_1():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_p:
                     paused = True
-
-        if paused:
-            run = pause(screen)
-        
-
-            
+                    pause(screen)
+                else:
+                    if paused:
+                       paused = False
+                       player.player_update(screen)
+                    
 
         player.player_update(screen)
 

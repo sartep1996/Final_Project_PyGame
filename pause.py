@@ -1,6 +1,5 @@
 import pygame as pg
 from button import Button
-from main_menu import main_menu, SCREEN
 
 
 
@@ -33,7 +32,7 @@ def pause(screen):
                 text_input="QUIT TO MENU", font=get_font(75), base_color="#d7fcd4", hovering_color="Black")
 
     
-    SCREEN.blit(PAUSE_MENU_TEXT, PAUSE_MENU_RECT)
+    screen.blit(PAUSE_MENU_TEXT, PAUSE_MENU_RECT)
 
     while paused:
         PAUSE_MENU_MOUSE_POS = pg.mouse.get_pos()
@@ -47,11 +46,10 @@ def pause(screen):
             
             if event.type == pg.MOUSEBUTTONDOWN:
                 if CONTINUE_BUTTON.checkForInput(PAUSE_MENU_MOUSE_POS):
-                    return paused == False
-          
-        
+                    paused = False
+
                 if QUIT_TO_MENU.checkForInput(PAUSE_MENU_MOUSE_POS):
-                    return
+                    return "QUIT_TO_MENU"
                 
         screen.blit(PAUSE_MENU_TEXT, PAUSE_MENU_RECT)
         CONTINUE_BUTTON.changeColor(PAUSE_MENU_MOUSE_POS)

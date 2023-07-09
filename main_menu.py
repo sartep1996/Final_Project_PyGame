@@ -60,6 +60,8 @@ def main_menu():
                     sys.exit()
 
         pg.display.update()
+        
+     
 
 
 if __name__ == "__main__":
