@@ -3,9 +3,7 @@ import time
 
 #test player
 class Player(pg.sprite.Sprite):
-    def __init__(self, player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, player_image_death_path_1, player_image_death_path_2, player_image_death_path_final, position
-                 
-                  ):
+    def __init__(self, player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, player_image_death_path_1, player_image_death_path_2, player_image_death_path_final, position, player_image_path_raw_p, player_image_path_1_p, player_image_path_2_p, player_image_path_raw_up_p, player_image_up_path_1_p, player_image_up_path_2_p, player_image_path_raw_lef_p, player_image_left_path_1_p, player_image_left_path_2_p, player_image_path_raw_right_p, player_image_right_path_1_p, player_image_right_path_2_p, player_image_path_raw_upleft_p, player_image_upleft_path_1_p, player_image_upleft_path_2_p, player_image_path_raw_downleft_p, player_image_downleft_path_1_p, player_image_downleft_path_2_p, player_image_path_raw_upright_p, player_image_upright_path_1_p, player_image_upright_path_2_p, player_image_path_raw_downright_p, player_image_downright_path_1_p, player_image_downright_path_2_p):
         super().__init__()
         self.player_still_raw = pg.image.load(player_image_path_raw).convert_alpha()
 
@@ -124,8 +122,7 @@ class Player(pg.sprite.Sprite):
         self.allow_movement = True
         self.main_player_movement()
         self.animate()
-        # self.take_damage()
-        # self.draw_health_bar(screen, 50, 50, self.health)
+        self.draw(screen)
 
 
     def draw(self, screen):
@@ -369,5 +366,49 @@ player_image_death_path_final = 'Images/Player_sprites/player_death_final.png'
 # UNARMED
 
 
-player = Player(player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2,player_image_death_path_1, player_image_death_path_2, player_image_death_path_final,  (50, 50))
+# ARMED
+player_image_path_raw_p = 'Images/Player_sprites_pistol/player_down_still_p.png'
+player_image_path_1_p = 'Images/Player_sprites_pistol/player_down_1_p.png'
+player_image_path_2_p = 'Images/Player_sprites_pistol/player_down_2_p.png'
+
+player_image_path_raw_up_p = 'Images/Player_sprites_pistol/player_up_still_p.png'
+player_image_up_path_1_p = 'Images/Player_sprites_pistol/player_up_1_p.png'
+player_image_up_path_2_p = 'Images/Player_sprites_pistol/player_up_2_p.png'
+
+player_image_path_raw_lef_p= 'Images/Player_sprites_pistol/player_left_still_p.png'
+player_image_left_path_1_p = 'Images/Player_sprites_pistol/player_left_1_p.png'
+player_image_left_path_2_p = 'Images/Player_sprites_pistol/player_left_2_p.png'
+
+player_image_path_raw_right_p = 'Images/Player_sprites_pistol/player_right_still_p.png'
+player_image_right_path_1_p = 'Images/Player_sprites_pistol/player_right_1_p.png'
+player_image_right_path_2_p = 'Images/Player_sprites_pistol/player_right_2_p.png'
+
+player_image_path_raw_upleft_p = 'Images/Player_sprites_pistol/player_upleft_still_p.png'
+player_image_upleft_path_1_p = 'Images/Player_sprites_pistol/player_upleft_1_p.png'
+player_image_upleft_path_2_p = 'Images/Player_sprites_pistol/player_upleft_2_p.png'
+
+player_image_path_raw_downleft_p = 'Images/Player_sprites_pistol/player_downleft_still_p.png'
+player_image_downleft_path_1_p = 'Images/Player_sprites_pistol/player_downleft_1_p.png'
+player_image_downleft_path_2_p = 'Images/Player_sprites_pistol/player_downleft_2_p.png'
+
+player_image_path_raw_upright_p = 'Images/Player_sprites_pistol/player_upright_still_p.png'
+player_image_upright_path_1_p = 'Images/Player_sprites_pistol/player_upright_1_p.png'
+player_image_upright_path_2_p = 'Images/Player_sprites_pistol/player_upright_2_p.png'
+
+player_image_path_raw_downright_p= 'Images/Player_sprites/player_downright_still_p.png'
+player_image_downright_path_1_p = 'Images/Player_sprites/player_downright_1_p.png'
+player_image_downright_path_2_p = 'Images/Player_sprites/player_downright_2_p.png'
+
+# ARMED
+
+
+
+
+
+
+
+
+
+
+player = Player(player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2,player_image_death_path_1, player_image_death_path_2, player_image_death_path_final,  (50, 50), player_image_path_raw_p, player_image_path_1_p, player_image_path_2_p, player_image_path_raw_up_p, player_image_up_path_1_p, player_image_up_path_2_p, player_image_path_raw_lef_p, player_image_left_path_1_p, player_image_left_path_2_p, player_image_path_raw_right_p, player_image_right_path_1_p, player_image_right_path_2_p, player_image_path_raw_upleft_p, player_image_upleft_path_1_p, player_image_upleft_path_2_p, player_image_path_raw_downleft_p, player_image_downleft_path_1_p, player_image_downleft_path_2_p, player_image_path_raw_upright_p, player_image_upright_path_1_p, player_image_upright_path_2_p, player_image_path_raw_downright_p, player_image_downright_path_1_p, player_image_downright_path_2_p )
 

@@ -17,7 +17,7 @@ def main_game_lvl_1():
     background_lvl_1 = pg.transform.scale(original_background_lvl_1, (800, 600))
 
 
-    from player_movement import player
+    from player_movement_refactoring import player
     player.set_position(350, 350)
     from monster_1 import monster1
     monster1.set_position(200, 200)
