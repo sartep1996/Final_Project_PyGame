@@ -78,7 +78,8 @@ def main_game_lvl_1():
             
 
 
-        player.draw(screen)
+        # player.draw(screen)
+        player.draw_pistol_player(screen)
         player.draw_health_bar(screen, 10, 10)
     
         pg.display.update()
