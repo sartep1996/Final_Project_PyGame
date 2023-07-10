@@ -58,7 +58,8 @@ def main_menu():
                     from player_movement import player
                     from monster_1 import monster1
                     player.reset(350, 350)
-                    monster1.reset(player_rect=player.player_rect, screen = SCREEN)
+                    monster1.monster_patrol_left_right()
+                    monster1.reset(player.player_rect, SCREEN, 200, 200)
                     main_game_lvl_1()
             
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):

@@ -51,6 +51,7 @@ class Monster1(pg.sprite.Sprite):
         self.patrol_mode = True
         self.monster_is_attacking = False
         self.attack_damage = 0
+        self.should_reset_patrol = False
         
         # self.check_collision = True
 
@@ -66,6 +67,12 @@ class Monster1(pg.sprite.Sprite):
 
 
     def monster_update(self, player_rect, screen):
+
+        
+        self.should_reset_patrol = True
+        
+        if self.should_reset_patrol:
+            self.patrol_mode = True 
         
         self.monster_patrol_left_right()
         
@@ -181,36 +188,6 @@ class Monster1(pg.sprite.Sprite):
                     self.direction = 0
                     self.last_moved = self.monster_image_up_still
 
-    def reset(self, player_rect, screen):
-        self.monster_update(player_rect, screen)
-
-            
-
-
-
-    
-    # def monster_follow_player(self, player_rect):
-    #     LERP_FACTOR      = 0.05
-    #     minimum_distance = 127
-    #     maximum_distance = 150
-        
-    #     player_vector = pg.math.Vector2(player_rect.center)
-    #     monster_vector = pg.math.Vector2(self.monster_rect.center)
-    #     new_monster_vector = pg.math.Vector2(self.monster_rect.center)
-       
-    #     distance = monster_vector.distance_to(player_vector)
-    #     direction_vector = player_vector - monster_vector
-    #     if distance > minimum_distance:
-    #         direction_vector /= distance
-    #         min_step = max(0, distance - maximum_distance)
-    #         max_step = distance - minimum_distance
-    #         step_distance = min_step + (max_step - min_step) * LERP_FACTOR
-    #         new_monster_vector = monster_vector + direction_vector * step_distance
-            
-    #     self.monster_rect.center = (new_monster_vector.x, new_monster_vector.y)
-
-        
-    #     self.folowing_monster_sprites_update(player_rect, distance)
 
 
     def monster_follow_player(self, player_rect):
@@ -365,6 +342,13 @@ class Monster1(pg.sprite.Sprite):
         player_distance = player_vector.distance_to(monster_vector)
         if player_distance < CLOSE_DISTANCE_THRESHOLD:
             self.is_monster_image = False
+
+    
+    def reset(self, player_rect, screen, x, y):
+        self.set_position(x, y)
+        self.should_reset_patrol = True
+        self.patrol_mode = True
+        self.monster_update(player_rect, screen)
 
 
 

@@ -22,7 +22,7 @@ def main_game_lvl_1():
     from monster_1 import monster1
     monster1.set_position(200, 200)
     from background_objects import plane_b_object
-    from global_functions import collision_with_static_object, collision_with_moving_object, player_taking_damage
+    from global_functions import collision_with_static_object, collision_with_moving_object
     from boundries import boundries
 
     screen_rect = screen.get_rect()
@@ -56,7 +56,9 @@ def main_game_lvl_1():
             if damage > 0:
                 player.take_damage(damage)
 
+        # monster1.set_position(200, 200)
         monster1.monster_update(player.player_rect, screen)
+
         boundries(player.player_rect)
         boundries(monster1.monster_rect)
         collision_with_static_object(player.player_rect, plane_b_object_rect, 10)

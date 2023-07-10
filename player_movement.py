@@ -3,7 +3,9 @@ import time
 
 #test player
 class Player(pg.sprite.Sprite):
-    def __init__(self, player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, player_image_death_path_1, player_image_death_path_2, player_image_death_path_final, position ):
+    def __init__(self, player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2, player_image_death_path_1, player_image_death_path_2, player_image_death_path_final, position
+                 
+                  ):
         super().__init__()
         self.player_still_raw = pg.image.load(player_image_path_raw).convert_alpha()
 
@@ -328,7 +330,7 @@ class Player(pg.sprite.Sprite):
         self.player_rect.topleft = (x, y)
         self.health = 100
     
-
+# UNARMED
 player_image_path_raw = 'Images/Player_sprites/player_still.png'
 player_image_path_1 = 'Images/Player_sprites/player_down_1.png'
 player_image_path_2 = 'Images/Player_sprites/player_down_2.png'
@@ -364,6 +366,7 @@ player_image_downright_path_2 = 'Images/Player_sprites/player_downright_2.png'
 player_image_death_path_1 = 'Images/Player_sprites/player_death_1.png'
 player_image_death_path_2 = 'Images/Player_sprites/player_death_2.png'
 player_image_death_path_final = 'Images/Player_sprites/player_death_final.png'
+# UNARMED
 
 
 player = Player(player_image_path_1, player_image_path_2, player_image_path_raw, player_image_up_path_1, player_image_up_path_2, player_image_path_raw_up, player_image_left_path_1, player_image_left_path_2, player_image_path_raw_left, player_image_right_path_1, player_image_right_path_2, player_image_path_raw_right, player_image_path_raw_upleft, player_image_upleft_path_1, player_image_upleft_path_2, player_image_path_raw_downleft, player_image_downleft_path_1, player_image_downleft_path_2, player_image_path_raw_upright, player_image_upright_path_1, player_image_upright_path_2, player_image_path_raw_downright, player_image_downright_path_1, player_image_downright_path_2,player_image_death_path_1, player_image_death_path_2, player_image_death_path_final,  (50, 50))
