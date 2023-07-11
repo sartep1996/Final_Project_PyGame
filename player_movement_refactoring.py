@@ -6,6 +6,7 @@ import math
 
 SHOOTING_DISTANCE  = 500
 pistol_shot_wav = pg.mixer.Sound('Sounds/Pistol_Shot.wav')
+pistol_shot_wav.set_volume(0.3)
 
 
 
@@ -440,34 +441,145 @@ class Player(pg.sprite.Sprite):
         dx = monster_rect.centerx - self.player_rect_pistol.centerx
         dy = monster_rect.centery - self.player_rect_pistol.centery
         distance = math.sqrt(dx**2 + dy**2)
+
+        print(dx, dy, self.last_moved, distance)
+        if distance <= SHOOTING_DISTANCE:
+            if dy > 0 and abs(dx) < abs(dy):
+                if self.last_moved == 'up' or self.last_moved == 'up_still':
+                    return True
+            elif dy < 0 and abs(dx) < abs(dy):
+                if self.last_moved == 'down' or self.last_moved == 'down_still':
+                    return True
+            elif dx > 0 and abs(dx) > abs(dy):
+                if self.last_moved == 'right' or self.last_moved == 'right_still':
+                    return True
+            elif dx < 0 and abs(dx) > abs(dy):
+                if self.last_moved == 'left' or self.last_moved == 'left_still':
+                    return True
+            elif dx < 0 and dy > 0 and abs(dx) < abs(dy):
+                if self.last_moved == 'upleft' or self.last_moved == 'upleft_still':
+                    return True
+            elif dx < 0 and dy < 0 and abs(dx) < abs(dy):
+                if self.last_moved == 'downleft' or self.last_moved == 'downleft_still':
+                    return True
+            elif dx > 0 and dy > 0 and abs(dx) > abs(dy):
+                if self.last_moved == 'upright' or self.last_moved == 'upright_still':
+                    return True
+            elif dx > 0 and dy < 0 and abs(dx) > abs(dy):
+                if self.last_moved == 'downright' or self.last_moved == 'downright_still':
+                    return True
+        
+        
+            # if distance <= SHOOTING_DISTANCE:
+            #     if dy > 0 and abs(dx) < abs(dy):
+            #         if self.last_moved == 'up' or self.last_moved == 'up_still':
+            #             return True
+            #     elif dy < 0 and abs(dx) < abs(dy):
+            #         if self.last_moved == 'down' or self.last_moved == 'down_still':
+            #             return True
+            #     elif dx < 0 and abs(dx) == abs(dy):
+            #         if self.last_moved == 'left' or self.last_moved == 'left_still':
+            #             return True
+            #     elif dx > 0 and abs(dx) > abs(dy):
+            #         if self.last_moved == 'right' or self.last_moved == 'right_still':
+            #             return True
+
+
+    # def is_facing_monster(self, monster_rect):
+    #     dx = monster_rect.centerx - self.player_rect_pistol.centerx
+    #     dy = monster_rect.centery - self.player_rect_pistol.centery
+    #     distance = math.sqrt(dx**2 + dy**2)
+
+    #     print(dx, dy, self.last_moved, distance)
+    #     if distance <= SHOOTING_DISTANCE:
+    #         if dy > 0 and abs(dx) < abs(dy):
+    #             if self.last_moved == 'up' or self.last_moved == 'up_still':
+    #                 return True
+    #         elif dy < 0 and abs(dx) < abs(dy):
+    #             if self.last_moved == 'down' or self.last_moved == 'down_still':
+    #                 return True
+    #         elif dx > 0 and abs(dx) > abs(dy):
+    #             if self.last_moved == 'right' or self.last_moved == 'right_still':
+    #                 return True
+    #         elif dx < 0 and abs(dx) < abs(dy):
+    #             if self.last_moved == 'left' or self.last_moved == 'left_still':
+    #                 return True
+    def is_facing_monster(self, monster_rect):
+        dx = monster_rect.centerx - self.player_rect_pistol.centerx
+        dy = monster_rect.centery - self.player_rect_pistol.centery
+        distance = math.sqrt(dx**2 + dy**2)
         
         print(dx, dy, self.last_moved, distance)
         if distance <= SHOOTING_DISTANCE:
             angle = math.atan2(dy, dx)  # Calculate the angle between the player and the monster
+            angle_deg = math.degrees(angle)
 
-            if self.last_moved == 'up' and (-math.pi / 4 < angle <= math.pi / 4):
+            direction_ranges = {
+                'left': (-180, -135),
+                'right': (-45, 45),
+                'up': (45, 135),
+                'down': (-135, -45),
+                'upleft': (135, 180),
+                'upright': (-135, -90),
+                'downleft': (90, 135),
+                'downright': (-90, -45)
+            }
+
+            if self.last_moved in direction_ranges:
+                angle_range = direction_ranges[self.last_moved]
+                if angle_range[0] <= angle_deg <= angle_range[1]:
+                    return True
+
+    def is_facing_monster(self, monster_rect):
+        dx = monster_rect.centerx - self.player_rect_pistol.centerx
+        dy = monster_rect.centery - self.player_rect_pistol.centery
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+
+        if distance <= SHOOTING_DISTANCE:
+            if self.last_moved == 'left' or self.last_moved == 'left_still' and dx < 0:
                 return True
-            elif self.last_moved == 'down' and (-math.pi / 4 < angle <= math.pi / 4):
+            elif self.last_moved == 'right'or self.last_moved == 'right_still' and dx > 0:
                 return True
-            elif self.last_moved == 'left' and (math.pi / 4 < angle <= 3 * math.pi / 4):
+            elif self.last_moved == 'up' or self.last_moved == 'up_still' and dy < 0:
                 return True
-            elif self.last_moved == 'right' and (-3 * math.pi / 4 <= angle < -math.pi / 4):
+            elif self.last_moved == 'down' or self.last_moved == 'down_still'and dy > 0:
                 return True
-            elif self.last_moved == 'upleft' and (math.pi / 4 < angle <= math.pi / 2):
+            elif self.last_moved == 'upleft' or self.last_moved == 'upleft_still' and dx < 0 and dy < 0:
                 return True
-            elif self.last_moved == 'upright' and (-math.pi / 2 <= angle < -math.pi / 4):
+            elif self.last_moved == 'upright' or self.last_moved == 'upright_still' and dx > 0 and dy < 0:
                 return True
-            elif self.last_moved == 'downleft' and (0 <= angle <= math.pi / 4):
+            elif self.last_moved == 'downleft' or self.last_moved == 'downleft_still' and dx < 0 and dy > 0:
                 return True
-            elif self.last_moved == 'downright' and (-math.pi / 4 < angle <= 0):
-                return True
-            elif self.last_moved.endswith('_still'):  # Check for _still images
+            elif self.last_moved == 'downright' or self.last_moved == 'downright_still' and dx > 0 and dy > 0:
                 return True
 
         return False
 
 
+    def is_facing_monster(self, monster_rect):
+        dx = monster_rect.centerx - self.player_rect_pistol.centerx
+        dy = monster_rect.centery - self.player_rect_pistol.centery
+        distance = math.sqrt(dx ** 2 + dy ** 2)
 
+        if distance <= SHOOTING_DISTANCE or distance <= 0:
+            if (self.last_moved in ['left', 'left_still']) and dx < 0:
+                return True
+            elif (self.last_moved in ['right', 'right_still']) and dx > 0:
+                return True
+            elif (self.last_moved in ['up', 'up_still']) and dy < 0:
+                return True
+            elif (self.last_moved in ['down', 'down_still']) and dy > 0:
+                return True
+            elif (self.last_moved in ['upleft', 'upleft_still']) and dx < 0 and dy < 0:
+                return True
+            elif (self.last_moved in ['upright', 'upright_still']) and dx > 0 and dy < 0:
+                return True
+            elif (self.last_moved in ['downleft', 'downleft_still']) and dx < 0 and dy > 0:
+                return True
+            elif (self.last_moved in ['downright', 'downright_still']) and dx > 0 and dy > 0:
+                return True
+
+        return False
     
     def damage(self):
         return self.pistol_damage

@@ -52,7 +52,7 @@ class Monster1(pg.sprite.Sprite):
         self.monster_is_attacking = False
         self.attack_damage = 0
         self.should_reset_patrol = False
-        self.max_health = 100
+        self.max_health = 1000
         self.monster_health = self.max_health
 
         
