@@ -52,7 +52,9 @@ class Monster1(pg.sprite.Sprite):
         self.monster_is_attacking = False
         self.attack_damage = 0
         self.should_reset_patrol = False
-        self.monster_health = 100
+        self.max_health = 100
+        self.monster_health = self.max_health
+
         
         # self.check_collision = True
 
@@ -164,6 +166,34 @@ class Monster1(pg.sprite.Sprite):
 
         elif self.last_moved == self.monster_image_down_attack:
             screen.blit(self.monster_image_down_attack, self.monster_rect)
+
+    def draw_health_bar(self, screen, x, y):        
+
+        bar_width = 100
+        bar_height = 10
+        fill_color = (0, 255, 0)
+        outline_color = (255, 255, 255)
+        draining_health_fill = (255, 0, 0)
+        if self.monster_health <0: self.monster_health = 0
+        ratio = self.monster_health  / self.max_health 
+
+        outline_rect = pg.Rect(x - 3, y - 3 , bar_width + 6, bar_height + 6)
+        pg.draw.rect(screen, outline_color, outline_rect )
+
+        health_bar_rect = pg.Rect(x, y, bar_width, bar_height)
+        pg.draw.rect(screen, draining_health_fill, health_bar_rect)
+       
+        fill_width = bar_width * ratio
+        fill_rect = pg.Rect(x, y, fill_width, bar_height)
+        pg.draw.rect(screen, fill_color, fill_rect)
+
+
+    def take_damage(self, amount):
+        self.monster_health -= amount
+        if self.monster_health <= 0:
+            self.monster_health = 0
+
+        return self.monster_health
 
 
     def monster_collides_with(self, player_rect):
@@ -300,7 +330,7 @@ class Monster1(pg.sprite.Sprite):
                     else:
                         self.last_moved = self.monster_image_up_still
             
-            self.attack_damage = 2
+            self.attack_damage = 0
             return self.attack_damage 
          
                 

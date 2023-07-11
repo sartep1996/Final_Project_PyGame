@@ -2,9 +2,14 @@ import pygame as pg
 from pause import pause
 
 
+
+
 def main_game_lvl_1():
     pg.init()
+    pg.mixer.init()
     clock = pg.time.Clock()
+    pistol_shot_wav = pg.mixer.Sound('Sounds/Pistol_Shot.wav')
+
 
 
     SCREEN_WIDTH = 800
@@ -17,7 +22,7 @@ def main_game_lvl_1():
     background_lvl_1 = pg.transform.scale(original_background_lvl_1, (800, 600))
 
 
-    from player_movement_refactoring import player
+    from player_movement_refactoring import player, pistol_shot_wav
     player.set_position(350, 350)
     from monster_1 import monster1
     monster1.set_position(200, 200)
@@ -47,6 +52,9 @@ def main_game_lvl_1():
                     if paused:
                        paused = False
                        player.player_update(screen)
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_SPACE:
+                    pistol_shot_wav.play()
                     
 
         player.player_update(screen)
@@ -56,13 +64,20 @@ def main_game_lvl_1():
             if damage > 0:
                 player.take_damage(damage)
 
+        
 
-        if player.shooting_distance(monster1.monster_rect):
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE:
-                    
-                    damage = player.shoot()
-                    monster1.monster_health - damage
+        keys = pg.key.get_pressed()
+        if keys[pg.K_SPACE]:
+            if player.is_facing_monster(monster1.monster_rect):
+                print("yes")
+                damage = player.damage()
+                if damage > 0:
+                    monster1.take_damage(damage)
+
+        
+
+
+        
 
 
         # monster1.set_position(200, 200)
@@ -81,6 +96,7 @@ def main_game_lvl_1():
         screen.blit(background_lvl_1, (0,0))
         screen.blit(plane_b_object, plane_b_object_rect) 
         monster1.draw_monster(screen)
+        monster1.draw_health_bar(screen, 690, 10)
 
         if player.health == 0:
             player.draw_player_death_animation()

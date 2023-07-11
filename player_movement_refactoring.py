@@ -1,10 +1,12 @@
 import pygame as pg
 import time
+import math
 
 # Image data for sprite loading
 
-SHOOTING_DISTANCE  = 300
-pistol_shot_mp3 = pg.mixer.Sound('Sounds/Pistol_Shot.mp3')
+SHOOTING_DISTANCE  = 500
+pistol_shot_wav = pg.mixer.Sound('Sounds/Pistol_Shot.wav')
+
 
 
 image_data = {
@@ -434,31 +436,40 @@ class Player(pg.sprite.Sprite):
         self.health = 100
 
 
-    def shooting_distance(self, monster_rect):
-        player_vector = pg.math.Vector2(self.player_rect_pistol.center)
-        monster_vector = pg.math.Vector2(monster_rect.center)
-        player_distance = player_vector.distance_to(monster_vector)
+    def is_facing_monster(self, monster_rect):
+        dx = monster_rect.centerx - self.player_rect_pistol.centerx
+        dy = monster_rect.centery - self.player_rect_pistol.centery
+        distance = math.sqrt(dx**2 + dy**2)
+        
+        print(dx, dy, self.last_moved, distance)
+        if distance <= SHOOTING_DISTANCE:
+            angle = math.atan2(dy, dx)  # Calculate the angle between the player and the monster
+
+            if self.last_moved == 'up' and (-math.pi / 4 < angle <= math.pi / 4):
+                return True
+            elif self.last_moved == 'down' and (-math.pi / 4 < angle <= math.pi / 4):
+                return True
+            elif self.last_moved == 'left' and (math.pi / 4 < angle <= 3 * math.pi / 4):
+                return True
+            elif self.last_moved == 'right' and (-3 * math.pi / 4 <= angle < -math.pi / 4):
+                return True
+            elif self.last_moved == 'upleft' and (math.pi / 4 < angle <= math.pi / 2):
+                return True
+            elif self.last_moved == 'upright' and (-math.pi / 2 <= angle < -math.pi / 4):
+                return True
+            elif self.last_moved == 'downleft' and (0 <= angle <= math.pi / 4):
+                return True
+            elif self.last_moved == 'downright' and (-math.pi / 4 < angle <= 0):
+                return True
+            elif self.last_moved.endswith('_still'):  # Check for _still images
+                return True
+
+        return False
 
 
-        dx = self.player_rect_pistol.center[0] - monster_rect.center[0]
-        dy = self.player_rect_pistol.center[1] - monster_rect.center[1]
-
-        if abs(dx) > abs(dy):
-            if dx > 0:
-                self.direction = 1
-            else:
-                self.direction = -1
-        else:
-            if dy > 0:
-                self.direction = 1
-            else:
-                self.direction = -1
-
-        if player_distance < SHOOTING_DISTANCE:
-            self.close_to_shoot = True
 
     
-    def shoot(self):
+    def damage(self):
         return self.pistol_damage
             
 
