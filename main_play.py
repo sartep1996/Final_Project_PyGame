@@ -56,6 +56,15 @@ def main_game_lvl_1():
             if damage > 0:
                 player.take_damage(damage)
 
+
+        if player.shooting_distance(monster1.monster_rect):
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_SPACE:
+                    
+                    damage = player.shoot()
+                    monster1.monster_health - damage
+
+
         # monster1.set_position(200, 200)
         monster1.monster_update(player.player_rect, screen)
 

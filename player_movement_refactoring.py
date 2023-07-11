@@ -3,6 +3,10 @@ import time
 
 # Image data for sprite loading
 
+SHOOTING_DISTANCE  = 300
+pistol_shot_mp3 = pg.mixer.Sound('Sounds/Pistol_Shot.mp3')
+
+
 image_data = {
     'still': {
         'path': 'Images/Player_sprites/player_down_still.png',
@@ -235,9 +239,10 @@ class Player(pg.sprite.Sprite):
         self.last_frame_time = time.time()
         self.last_image = False
         self.frame_index = 0
-
         self.max_health = 100
+        self.pistol_damage = 5 
         self.health = self.max_health
+        self.close_to_shoot = False
 
         self.images = {}
         self.pistol_images = {}
@@ -427,6 +432,37 @@ class Player(pg.sprite.Sprite):
         self.set_position( x, y)
         self.player_rect.topleft = (x, y)
         self.health = 100
+
+
+    def shooting_distance(self, monster_rect):
+        player_vector = pg.math.Vector2(self.player_rect_pistol.center)
+        monster_vector = pg.math.Vector2(monster_rect.center)
+        player_distance = player_vector.distance_to(monster_vector)
+
+
+        dx = self.player_rect_pistol.center[0] - monster_rect.center[0]
+        dy = self.player_rect_pistol.center[1] - monster_rect.center[1]
+
+        if abs(dx) > abs(dy):
+            if dx > 0:
+                self.direction = 1
+            else:
+                self.direction = -1
+        else:
+            if dy > 0:
+                self.direction = 1
+            else:
+                self.direction = -1
+
+        if player_distance < SHOOTING_DISTANCE:
+            self.close_to_shoot = True
+
+    
+    def shoot(self):
+        return self.pistol_damage
+            
+
+
 
 
 
