@@ -5,7 +5,7 @@ from boundries import BOUNDRY_RIGHT, BOUNDRY_LEFT, BOUNDRY_BOTTOM, BOUNDRY_TOP
 CLOSE_DISTANCE_THRESHOLD = 140
 
 class Monster1(pg.sprite.Sprite):
-    def __init__(self, x, y, speed, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, position ):
+    def __init__(self, x, y, speed, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, position  ):
         super().__init__()
         self.monster_image_still = pg.transform.scale(pg.image.load(monster_image_path_raw_down).convert_alpha(), (100, 100))
 
@@ -38,6 +38,11 @@ class Monster1(pg.sprite.Sprite):
         self.monster_image_right_attack =  pg.transform.scale(pg.image.load(monster_image_right_path_attack).convert_alpha(), (100, 100))
 
         
+        self.monster_image_death_1 = pg.transform.scale(pg.image.load(monster_image_death_path_1).convert_alpha(), (100, 100))
+        self.monster_image_death_2 = pg.transform.scale(pg.image.load(monster_image_death_path_2).convert_alpha(), (100, 100))
+        self.monster_image_death_final = pg.transform.scale(pg.image.load(monster_image_death_path_final).convert_alpha(), (100, 100))
+
+        
         # The rest of the charackteristics
         self.monster_rect = self.monster_image_still.get_rect()
         self.monster_rect.topleft = position #sets initial position
@@ -54,6 +59,10 @@ class Monster1(pg.sprite.Sprite):
         self.should_reset_patrol = False
         self.max_health = 1000
         self.monster_health = self.max_health
+        
+        self.last_image = False
+        self.frame_index = 0
+
 
         
         # self.check_collision = True
@@ -92,6 +101,10 @@ class Monster1(pg.sprite.Sprite):
             self.monster_is_attacking = False
         
         self.monster_animate_when_following(player_rect)
+
+        if self.monster_health == 0:
+            self.draw_monster_death_animation()
+            return
     '''
     def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
     '''
@@ -166,6 +179,18 @@ class Monster1(pg.sprite.Sprite):
 
         elif self.last_moved == self.monster_image_down_attack:
             screen.blit(self.monster_image_down_attack, self.monster_rect)
+
+        
+        if self.last_moved == self.monster_image_death_1:
+            screen.blit(self.monster_image_death_1, self.monster_rect)
+        
+        elif self.last_moved == self.monster_image_death_2:
+            screen.blit(self.monster_image_death_2, self.monster_rect)
+
+        elif self.last_moved == self.monster_image_death_final:
+            screen.blit(self.monster_image_death_final, self.monster_rect)
+
+
 
     def draw_health_bar(self, screen, x, y):        
 
@@ -374,6 +399,30 @@ class Monster1(pg.sprite.Sprite):
         if player_distance < CLOSE_DISTANCE_THRESHOLD:
             self.is_monster_image = False
 
+
+    def draw_monster_death_animation(self):
+        self.monster_is_attacking = False
+        self.patrol_mode = True
+        self.is_monster_image = False
+        self.should_follow_player = False
+        death_duration = 400
+        self.movement_speed = 0
+        animation_time = pg.time.get_ticks() % (3 * death_duration)
+
+        if self.last_image:
+            self.movement_speed = 0
+            self.last_moved = self.monster_image_death_final
+
+        else:
+            self.frame_index = animation_time // death_duration
+            self.movement_speed = 0
+            if self.frame_index == 0:
+                self.last_moved = self.monster_image_death_1
+                self.movement_speed = 0
+            elif self.frame_index == 1:
+                self.last_moved = self.monster_image_death_2
+                self.last_image = True
+
     
     def reset(self, player_rect, screen, x, y):
         self.set_position(x, y)
@@ -405,4 +454,9 @@ monster_image_right_path_2 = 'Images/Monster_1_sprites/monster_right_2.png'
 monster_image_right_path_attack = 'Images/Monster_1_sprites/monster_right_attack.png'
 
 
-monster1 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, (50, 50))
+monster_image_death_path_1 = 'Images/Monster_1_sprites/monster_death_1.png'
+monster_image_death_path_2 = 'Images/Monster_1_sprites/monster_death_2.png'
+monster_image_death_path_final = 'Images/Monster_1_sprites/monster_death_final.png'
+
+
+monster1 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, (50, 50))

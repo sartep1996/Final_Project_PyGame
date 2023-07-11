@@ -55,11 +55,11 @@ def main_menu():
                 sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    from player_movement import player
+                    from player_movement_refactoring import player
                     from monster_1 import monster1
-                    player.reset(350, 350)
-                    monster1.monster_patrol_left_right()
-                    monster1.reset(player.player_rect, SCREEN, 200, 200)
+                    # player.reset(350, 350)
+                    # monster1.monster_patrol_left_right()
+                    # monster1.reset(player.player_rect, SCREEN, 200, 200)
                     main_game_lvl_1()
             
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):

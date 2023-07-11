@@ -100,6 +100,12 @@ def main_game_lvl_1():
 
         if player.health == 0:
             player.draw_player_death_animation()
+
+        # if monster1.monster_health == 0:
+        #     monster1.should_follow_player = False
+        #     monster1.patrol_mode = False
+        #     monster1.monster_is_attacking = False
+        #     monster1.draw_monster_death_animation()
             
 
 
