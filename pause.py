@@ -36,6 +36,7 @@ def pause(screen):
     screen.blit(PAUSE_MENU_TEXT, PAUSE_MENU_RECT)
 
     while paused:
+        screen.fill("black")
         PAUSE_MENU_MOUSE_POS = pg.mouse.get_pos()
         for event in pg.event.get():
             if event.type == pg.QUIT:

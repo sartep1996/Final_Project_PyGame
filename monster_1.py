@@ -57,7 +57,7 @@ class Monster1(pg.sprite.Sprite):
         self.monster_is_attacking = False
         self.attack_damage = 0
         self.should_reset_patrol = False
-        self.max_health = 1000
+        self.max_health = 100
         self.monster_health = self.max_health
         
         self.last_image = False
@@ -81,16 +81,18 @@ class Monster1(pg.sprite.Sprite):
     def monster_update(self, player_rect, screen):
 
         
-        self.should_reset_patrol = True
+        # self.should_reset_patrol = True
         
-        if self.should_reset_patrol:
-            self.patrol_mode = True 
+        # if self.should_reset_patrol:
+        #     self.patrol_mode = True 
         
         self.monster_patrol_left_right()
         
         if self.should_follow_player:
             self.monster_follow_player(player_rect)
         self.monster_animate_when_following(player_rect)
+
+        self.close_distance(player_rect)
         
         self.monster_collides_with(player_rect)
         
@@ -115,6 +117,7 @@ class Monster1(pg.sprite.Sprite):
         if self.patrol_mode:
             self.x += self.movement_speed * self.direction
             self.monster_rect.x = self.x 
+        
         
     
         if self.direction == -1:
@@ -243,6 +246,7 @@ class Monster1(pg.sprite.Sprite):
                 else:
                     self.direction = 0
                     self.last_moved = self.monster_image_up_still
+        
 
 
 
@@ -309,6 +313,19 @@ class Monster1(pg.sprite.Sprite):
             self.monster_is_attacking = True
         else:
             self.monster_is_attacking = False
+
+        
+    def close_distance(self, player_rect):
+        player_vector = pg.math.Vector2(player_rect.center)
+        monster_vector = pg.math.Vector2(self.monster_rect.center)
+        player_distance = player_vector.distance_to(monster_vector)
+
+        if player_distance < CLOSE_DISTANCE_THRESHOLD:
+            self.monster_is_attacking = True
+            self.should_follow_player = True
+        else:
+            self.monster_is_attacking = False
+        
 
     
 

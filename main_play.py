@@ -111,6 +111,11 @@ def main_game_lvl_1():
 
         # player.draw(screen)
         player.draw_pistol_player(screen)
+        keys = pg.key.get_pressed()
+        if keys[pg.K_SPACE]:
+            delta_time = clock.tick(60)
+            player.draw_flash(screen, delta_time)
+
         player.draw_health_bar(screen, 10, 10)
     
         pg.display.update()

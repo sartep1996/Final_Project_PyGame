@@ -1,12 +1,14 @@
 import pygame as pg
 import time
 import math
-
+import time
 # Image data for sprite loading
 
 SHOOTING_DISTANCE  = 500
 pistol_shot_wav = pg.mixer.Sound('Sounds/Pistol_Shot.wav')
 pistol_shot_wav.set_volume(0.3)
+flash_timer = 0
+flash_duration = 0.2
 
 
 
@@ -105,6 +107,12 @@ image_data = {
         'path': 'Images/Player_sprites/player_death_final.png',
         'frames': 1,
         'size': (100, 100)
+    },
+    'flash': {
+        'path': 'Images/Flash/pistol_flash.png',
+        'frames': 1,
+        'size': (100, 100)
+
 }}
 
 pistol_image_data = {
@@ -202,6 +210,11 @@ pistol_image_data = {
         'path': 'Images/Player_sprites/player_death_final.png',
         'frames': 1,
         'size': (100, 100)
+    },
+    'flash': {
+        'path': 'Images/Flash/pistol_flash.png',
+        'frames': 1,
+        'size': (100, 100)
 
 }}
 
@@ -234,6 +247,8 @@ class Player(pg.sprite.Sprite):
         self.player_rect.topleft = position
         self.player_rect_pistol = pg.Rect(position, image_data['still']['size'])
         self.player_rect_pistol.topleft = position
+        self.flash_rect = pg.Rect(position, image_data['flash']['size'])
+        self.flash_rect.topleft = position
         self.is_player_image = True
         self.animation_timer = 0
         self.animation_delay = 350
@@ -302,7 +317,16 @@ class Player(pg.sprite.Sprite):
         else:
             screen.blit(self.pistol_images['still'], self.player_rect)
 
+    def draw_flash(self, screen, delta_time):
+        global flash_duration, flash_timer
 
+        if flash_timer > 0:
+            self.flash_rect.center = self.player_rect_pistol.center
+            screen.blit(self.pistol_images['flash'], self.player_rect)
+            flash_timer -= delta_time/1000
+
+        if flash_timer <= 0:
+            flash_timer = flash_duration
 
 
   #responsible for player movement
