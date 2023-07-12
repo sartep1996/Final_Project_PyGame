@@ -59,7 +59,8 @@ class Monster1(pg.sprite.Sprite):
         self.should_reset_patrol = False
         self.max_health = 100
         self.monster_health = self.max_health
-        
+        self.death_position = pg.Rect(*position, self.monster_rect.width, self.monster_rect.height)
+                
         self.last_image = False
         self.frame_index = 0
 
@@ -439,6 +440,8 @@ class Monster1(pg.sprite.Sprite):
             elif self.frame_index == 1:
                 self.last_moved = self.monster_image_death_2
                 self.last_image = True
+        
+        # self.monster_rect = self.death_position
 
     
     def reset(self, player_rect, screen, x, y):

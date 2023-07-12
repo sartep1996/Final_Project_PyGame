@@ -1,12 +1,11 @@
 import pygame as pg
 import time
 import math
-import time
 # Image data for sprite loading
 
 SHOOTING_DISTANCE  = 500
 pistol_shot_wav = pg.mixer.Sound('Sounds/Pistol_Shot.wav')
-pistol_shot_wav.set_volume(0.3)
+pistol_shot_wav.set_volume(0.05)
 flash_timer = 0
 flash_duration = 0.2
 
@@ -243,10 +242,12 @@ class Player(pg.sprite.Sprite):
     def __init__(self, image_data, position):
         super().__init__()
 
+
         self.player_rect = pg.Rect(position, image_data['still']['size'])
         self.player_rect.topleft = position
-        self.player_rect_pistol = pg.Rect(position, image_data['still']['size'])
+        self.player_rect_pistol = pg.Rect(position, pistol_image_data['still']['size'])
         self.player_rect_pistol.topleft = position
+       
         self.flash_rect = pg.Rect(position, image_data['flash']['size'])
         self.flash_rect.topleft = position
         self.is_player_image = True
@@ -284,92 +285,160 @@ class Player(pg.sprite.Sprite):
     def set_position(self, x, y):
         self.player_rect.topleft = (x, y)
 
+
     def player_update(self, screen):
-        
+        self.player_update_helper(self.main_player_movement, screen)
+
+    def player_update_pistol(self, screen):
+        self.player_update_helper(self.main_player_movement_pistol, screen)
+
+    def player_update_helper(self, movement_function, screen):
         self.allow_movement = True
-        self.main_player_movement()
+        movement_function()
         self.animate()
         self.draw(screen)
 
 
-    def draw(self, screen):
-        if self.last_moved in self.images:
-            image_list = self.images[self.last_moved]
-            if isinstance(image_list, list):  # Check if image_list is a list
-                image_index = int(self.animation_timer // (self.animation_delay / len(image_list))) % len(image_list)
-                image = image_list[image_index]
-            else:  # If image_list is a single image, use it directly
-                image = image_list
-            screen.blit(image, self.player_rect)
-        else:
-            screen.blit(self.images['still'], self.player_rect)
 
-    
-    def draw_pistol_player(self, screen):
-        if self.last_moved in self.images:
-            image_list = self.pistol_images[self.last_moved]
+    def draw_helper(self, screen, image_data, rect):
+        if self.last_moved in image_data:
+            image_list = image_data[self.last_moved]
             if isinstance(image_list, list):  # Check if image_list is a list
                 image_index = int(self.animation_timer // (self.animation_delay / len(image_list))) % len(image_list)
                 image = image_list[image_index]
             else:  # If image_list is a single image, use it directly
                 image = image_list
-            screen.blit(image, self.player_rect)
+            screen.blit(image, rect)
         else:
-            screen.blit(self.pistol_images['still'], self.player_rect)
+            screen.blit(image_data['still'], rect)
+
+    def draw(self, screen):
+        self.draw_helper(screen, self.images, self.player_rect)
+
+    def draw_pistol_player(self, screen):
+        self.draw_helper(screen, self.pistol_images, self.player_rect_pistol)
+
 
     def draw_flash(self, screen, delta_time):
         global flash_duration, flash_timer
 
         if flash_timer > 0:
             self.flash_rect.center = self.player_rect_pistol.center
-            screen.blit(self.pistol_images['flash'], self.player_rect)
+            screen.blit(self.pistol_images['flash'], self.player_rect_pistol)
             flash_timer -= delta_time/1000
 
         if flash_timer <= 0:
             flash_timer = flash_duration
 
 
-  #responsible for player movement
-    def main_player_movement(self):
+    #responsible for player movement
+    def handle_movement(self, rect):
         key = pg.key.get_pressed()
         if key[pg.K_a]:
             if key[pg.K_w]:
                 diagonal_speed = self.movement_speed / 1.414
-                self.player_rect.move_ip(-diagonal_speed, -diagonal_speed)
+                rect.move_ip(-diagonal_speed, -diagonal_speed)
+                self.is_player_image = False
+                self.last_moved = 'upleft'
+            elif key[pg.K_s]:
+                diagonal_speed = self.movement_speed / 1.414
+                rect.move_ip(-diagonal_speed, diagonal_speed)
+                self.is_player_image = False
+                self.last_moved = 'downleft'
+            else:
+                rect.move_ip(-self.movement_speed, 0)
+                self.is_player_image = False
+                self.last_moved = 'left'
+        elif key[pg.K_d]:
+            if key[pg.K_w]:
+                diagonal_speed = self.movement_speed / 1.414
+                rect.move_ip(diagonal_speed, -diagonal_speed)
+                self.is_player_image = False
+                self.last_moved = 'upright'
+            elif key[pg.K_s]:
+                diagonal_speed = self.movement_speed / 1.414
+                rect.move_ip(diagonal_speed, diagonal_speed)
+                self.is_player_image = False
+                self.last_moved = 'downright'
+            else:
+                rect.move_ip(self.movement_speed, 0)
+                self.is_player_image = False
+                self.last_moved = 'right'
+        elif key[pg.K_w]:
+            rect.move_ip(0, -self.movement_speed)
+            self.is_player_image = False
+            self.last_moved = 'up'
+        elif key[pg.K_s]:
+            rect.move_ip(0, self.movement_speed)
+            self.is_player_image = False
+            self.last_moved = 'down'
+        else:
+            # Player is not moving
+            self.is_player_image = True
+            if self.last_moved == 'left':
+                self.last_moved = 'left_still'
+            elif self.last_moved == 'right':
+                self.last_moved = 'right_still'
+            elif self.last_moved == 'up':
+                self.last_moved = 'up_still'
+            elif self.last_moved == 'down':
+                self.last_moved = 'down_still'
+            elif self.last_moved == 'upleft':
+                self.last_moved = 'upleft_still'
+            elif self.last_moved == 'upright':
+                self.last_moved = 'upright_still'
+            elif self.last_moved == 'downleft':
+                self.last_moved = 'downleft_still'
+            elif self.last_moved == 'downright':
+                self.last_moved = 'downright_still'
+
+    def main_player_movement(self):
+        self.handle_movement(self.player_rect)
+
+    def main_player_movement_pistol(self):
+        self.handle_movement(self.player_rect_pistol)
+
+
+    def main_player_movement_pistol(self):
+        key = pg.key.get_pressed()
+        if key[pg.K_a]:
+            if key[pg.K_w]:
+                diagonal_speed = self.movement_speed / 1.414
+                self.player_rect_pistol.move_ip(-diagonal_speed, -diagonal_speed)
                 self.is_player_image = False
                 self.last_moved = 'upleft'
 
             elif key[pg.K_s]:
                 diagonal_speed = self.movement_speed / 1.414
-                self.player_rect.move_ip(-diagonal_speed, diagonal_speed)
+                self.player_rect_pistol.move_ip(-diagonal_speed, diagonal_speed)
                 self.is_player_image = False
                 self.last_moved = 'downleft'
             else:
-                self.player_rect.move_ip(-self.movement_speed, 0)
+                self.player_rect_pistol.move_ip(-self.movement_speed, 0)
                 self.is_player_image = False
                 self.last_moved = 'left'
 
         elif key[pg.K_d]:
             if key[pg.K_w]:
                 diagonal_speed = self.movement_speed / 1.414
-                self.player_rect.move_ip(diagonal_speed, -diagonal_speed)
+                self.player_rect_pistol.move_ip(diagonal_speed, -diagonal_speed)
                 self.is_player_image = False
                 self.last_moved = 'upright'
             elif key[pg.K_s]:
                 diagonal_speed = self.movement_speed / 1.414
-                self.player_rect.move_ip(diagonal_speed, diagonal_speed)
+                self.player_rect_pistol.move_ip(diagonal_speed, diagonal_speed)
                 self.is_player_image = False
                 self.last_moved = 'downright'
             else:
-                self.player_rect.move_ip(self.movement_speed, 0)
+                self.player_rect_pistol.move_ip(self.movement_speed, 0)
                 self.is_player_image = False
                 self.last_moved = 'right'
         elif key[pg.K_w]:
-            self.player_rect.move_ip(0, -self.movement_speed)
+            self.player_rect_pistol.move_ip(0, -self.movement_speed)
             self.is_player_image = False
             self.last_moved = 'up'
         elif key[pg.K_s]:
-            self.player_rect.move_ip(0, self.movement_speed)
+            self.player_rect_pistol.move_ip(0, self.movement_speed)
             self.is_player_image = False
             self.last_moved = 'down'
 
@@ -392,7 +461,6 @@ class Player(pg.sprite.Sprite):
                 self.last_moved = 'downleft_still'
             elif self.last_moved == 'downright':
                 self.last_moved = 'downright_still'
-            
         
      #responsible for animating charackter movement   
     def animate(self):
@@ -461,67 +529,35 @@ class Player(pg.sprite.Sprite):
         self.health = 100
 
 
-    def is_facing_monster(self, monster_rect):
-        dx = monster_rect.centerx - self.player_rect_pistol.centerx
-        dy = monster_rect.centery - self.player_rect_pistol.centery
-        distance = math.sqrt(dx**2 + dy**2)
-
-        print(dx, dy, self.last_moved, distance)
-        if distance <= SHOOTING_DISTANCE:
-            if dy > 0 and abs(dx) < abs(dy):
-                if self.last_moved == 'up' or self.last_moved == 'up_still':
-                    return True
-            elif dy < 0 and abs(dx) < abs(dy):
-                if self.last_moved == 'down' or self.last_moved == 'down_still':
-                    return True
-            elif dx > 0 and abs(dx) > abs(dy):
-                if self.last_moved == 'right' or self.last_moved == 'right_still':
-                    return True
-            elif dx < 0 and abs(dx) > abs(dy):
-                if self.last_moved == 'left' or self.last_moved == 'left_still':
-                    return True
-            elif dx < 0 and dy > 0 and abs(dx) < abs(dy):
-                if self.last_moved == 'upleft' or self.last_moved == 'upleft_still':
-                    return True
-            elif dx < 0 and dy < 0 and abs(dx) < abs(dy):
-                if self.last_moved == 'downleft' or self.last_moved == 'downleft_still':
-                    return True
-            elif dx > 0 and dy > 0 and abs(dx) > abs(dy):
-                if self.last_moved == 'upright' or self.last_moved == 'upright_still':
-                    return True
-            elif dx > 0 and dy < 0 and abs(dx) > abs(dy):
-                if self.last_moved == 'downright' or self.last_moved == 'downright_still':
-                    return True
-        
-        
 
     def is_facing_monster(self, monster_rect):
-        dx = monster_rect.centerx - self.player_rect_pistol.centerx
-        dy = monster_rect.centery - self.player_rect_pistol.centery
+        
+        dx = monster_rect.center[0] - self.player_rect_pistol[0]
+        dy = monster_rect.center[1] - self.player_rect_pistol.center[1]
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
+        print(dx, dy, self.last_moved, distance, self.player_rect_pistol.centerx, self.player_rect_pistol.centery)
         if distance <= SHOOTING_DISTANCE:
-            if self.last_moved == 'left' or self.last_moved == 'left_still' and dx < 0:
+            if (self.last_moved == 'left' or self.last_moved == 'left_still') and dx < 0:
                 return True
-            elif self.last_moved == 'right'or self.last_moved == 'right_still' and dx > 0:
+            elif (self.last_moved == 'right'or self.last_moved == 'right_still') and dx > 0:
                 return True
-            elif self.last_moved == 'up' or self.last_moved == 'up_still' and dy < 0:
+            elif (self.last_moved == 'up' or self.last_moved == 'up_still') and dy < 0:
                 return True
-            elif self.last_moved == 'down' or self.last_moved == 'down_still'and dy > 0:
+            elif (self.last_moved == 'down' or self.last_moved == 'down_still') and dy > 0:
                 return True
-            elif self.last_moved == 'upleft' or self.last_moved == 'upleft_still' and dx < 0 and dy < 0:
+            elif (self.last_moved == 'upleft' or self.last_moved == 'upleft_still') and dx < 0 and dy < 0:
                 return True
-            elif self.last_moved == 'upright' or self.last_moved == 'upright_still' and dx > 0 and dy < 0:
+            elif (self.last_moved == 'upright' or self.last_moved == 'upright_still') and dx > 0 and dy < 0:
                 return True
-            elif self.last_moved == 'downleft' or self.last_moved == 'downleft_still' and dx < 0 and dy > 0:
+            elif (self.last_moved == 'downleft' or self.last_moved == 'downleft_still') and dx < 0 and dy > 0:
                 return True
-            elif self.last_moved == 'downright' or self.last_moved == 'downright_still' and dx > 0 and dy > 0:
+            elif (self.last_moved == 'downright' or self.last_moved == 'downright_still') and dx > 0 and dy > 0:
                 return True
-
+        
         return False
 
 
-    
     def damage(self):
         return self.pistol_damage
             
