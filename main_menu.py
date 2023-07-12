@@ -1,5 +1,6 @@
 import pygame as pg 
 import sys
+from SaveLoadManager import SaveLoadSystem
 
 pg.init()
 
@@ -15,7 +16,8 @@ def get_font(size): # Returns Press-Start-2P in the desired size
     return pg.font.Font('assets/fonts/Rhuma Sinera Regular.ttf', size)
 
     
-
+saveloadmanager = SaveLoadSystem(".save", "save_data")
+saves_to_load = saveloadmanager.load_game_data("loads")
 
 def main_menu():
     from main_play import main_game_lvl_1
@@ -38,14 +40,14 @@ def main_menu():
         
         PLAY_BUTTON = Button(play_image, pos=(400, 280), 
                             text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="Black")
-        # OPTIONS_BUTTON = Button(image=pg.image.load("assets/Options Rect.png"), pos=(640, 400), 
-        #                     text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(quit_image, pos=(400, 380), 
+        LOAD_BUTTON = Button(play_image, pos=(400, 380), 
+                            text_input="LOAD", font=get_font(75), base_color="#d7fcd4", hovering_color="Black")
+        QUIT_BUTTON = Button(quit_image, pos=(400, 480), 
                             text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="Black")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_BUTTON, LOAD_BUTTON,  QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
         

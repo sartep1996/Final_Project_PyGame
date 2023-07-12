@@ -531,30 +531,32 @@ class Player(pg.sprite.Sprite):
 
 
     def is_facing_monster(self, monster_rect):
-        
-        dx = monster_rect.center[0] - self.player_rect_pistol[0]
-        dy = monster_rect.center[1] - self.player_rect_pistol.center[1]
+        dx = monster_rect.center[0] - self.player_rect_pistol.centerx
+        dy = monster_rect.center[1] - self.player_rect_pistol.centery
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
         print(dx, dy, self.last_moved, distance, self.player_rect_pistol.centerx, self.player_rect_pistol.centery)
+
         if distance <= SHOOTING_DISTANCE:
-            if (self.last_moved == 'left' or self.last_moved == 'left_still') and dx < 0:
-                return True
-            elif (self.last_moved == 'right'or self.last_moved == 'right_still') and dx > 0:
-                return True
-            elif (self.last_moved == 'up' or self.last_moved == 'up_still') and dy < 0:
-                return True
-            elif (self.last_moved == 'down' or self.last_moved == 'down_still') and dy > 0:
-                return True
-            elif (self.last_moved == 'upleft' or self.last_moved == 'upleft_still') and dx < 0 and dy < 0:
-                return True
-            elif (self.last_moved == 'upright' or self.last_moved == 'upright_still') and dx > 0 and dy < 0:
-                return True
-            elif (self.last_moved == 'downleft' or self.last_moved == 'downleft_still') and dx < 0 and dy > 0:
-                return True
-            elif (self.last_moved == 'downright' or self.last_moved == 'downright_still') and dx > 0 and dy > 0:
-                return True
-        
+            tolerance = 0.7  # Adjust the tolerance value as needed
+            
+            if self.last_moved == 'left' or self.last_moved == 'left_still':
+                return dx < 0 and abs(dy) < abs(dx) * (1 - tolerance)
+            elif self.last_moved == 'right' or self.last_moved == 'right_still':
+                return dx > 0 and abs(dy) < abs(dx) * (1 - tolerance)
+            elif self.last_moved == 'up' or self.last_moved == 'up_still':
+                return dy < 0 and abs(dx) < abs(dy) * (1 - tolerance)
+            elif self.last_moved == 'down' or self.last_moved == 'down_still':
+                return dy > 0 and abs(dx) < abs(dy) * (1 - tolerance)
+            elif self.last_moved == 'upleft' or self.last_moved == 'upleft_still':
+                return dx < 0 and dy < 0 and abs(dx) > abs(dy)
+            elif self.last_moved == 'upright' or self.last_moved == 'upright_still':
+                return dx > 0 and dy < 0 and abs(dx) > abs(dy)
+            elif self.last_moved == 'downleft' or self.last_moved == 'downleft_still':
+                return dx < 0 and dy > 0 and abs(dx) > abs(dy)
+            elif self.last_moved == 'downright' or self.last_moved == 'downright_still':
+                return dx > 0 and dy > 0 and abs(dx) > abs(dy)
+            
         return False
 
 

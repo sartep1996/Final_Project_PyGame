@@ -1,6 +1,9 @@
 import pygame as pg
 from pause import pause
+from SaveLoadManager import SaveLoadSystem
 
+saveloadmanager = SaveLoadSystem(".save", "save_data")
+saves_to_load = saveloadmanager.load_game_data("loads")
 
 
 
@@ -163,8 +166,12 @@ def main_game_lvl_1():
     plane_b_object_rect = plane_b_object.get_rect()
     plane_b_object_rect.topleft = (40, 400)
 
+    save_icon = pg.transform.scale(pg.image.load('Images/save_icon/save_icon.png').convert_alpha(), (100, 100))
+    save_icon_rect = save_icon.get_rect()
+
     global paused
     paused = False
+
 
     run = True
     while run:
@@ -184,6 +191,11 @@ def main_game_lvl_1():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     pistol_shot_wav.play()
+
+            if player.player_rect_pistol.colliderect(save_icon_rect):
+                save_icon = None
+                saveloadmanager.save_data()
+
                     
 
         # player.player_update_pistol(screen)
@@ -230,6 +242,7 @@ def main_game_lvl_1():
         #black screen fill for default, all images are on top of it
         screen.fill((0, 0, 0))
         #adding background of level 1
+        screen.blit(save_icon)
         screen.blit(background_lvl_1, (0,0))
         screen.blit(plane_b_object, plane_b_object_rect) 
         monster1.draw_monster(screen)
