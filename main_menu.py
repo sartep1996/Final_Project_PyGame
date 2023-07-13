@@ -2,7 +2,21 @@ import pygame as pg
 import sys
 from SaveLoadManager import SaveLoadSystem
 
+import json
+
+def load_game():
+    with open('save_game.json', 'r') as file:
+        game_state = json.load(file)
+    
+    return game_state
+
 pg.init()
+
+def load_game_new():
+    with open('new_game.json', 'r') as file:
+        game_state = json.load(file)
+    
+    return game_state
 
 SCREEN = pg.display.set_mode((800, 600))
 pg.display.set_caption("MENU")
@@ -16,8 +30,9 @@ def get_font(size): # Returns Press-Start-2P in the desired size
     return pg.font.Font('assets/fonts/Rhuma Sinera Regular.ttf', size)
 
     
-saveloadmanager = SaveLoadSystem(".save", "save_data")
-saves_to_load = saveloadmanager.load_game_data("loads")
+
+
+
 
 def main_menu():
     from main_play import main_game_lvl_1
@@ -57,12 +72,13 @@ def main_menu():
                 sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    from player_movement_refactoring import player
-                    from monster_1 import monster1
-                    # player.reset(350, 350)
-                    # monster1.monster_patrol_left_right()
-                    # monster1.reset(player.player_rect, SCREEN, 200, 200)
-                    main_game_lvl_1()
+                    game_state = load_game_new()
+                    main_game_lvl_1(game_state)
+
+                if LOAD_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    game_state = load_game()
+                    main_game_lvl_1(game_state)
+
             
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pg.quit()

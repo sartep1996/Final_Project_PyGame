@@ -535,8 +535,6 @@ class Player(pg.sprite.Sprite):
         dy = monster_rect.center[1] - self.player_rect_pistol.centery
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
-        print(dx, dy, self.last_moved, distance, self.player_rect_pistol.centerx, self.player_rect_pistol.centery)
-
         if distance <= SHOOTING_DISTANCE:
             tolerance = 0.7  # Adjust the tolerance value as needed
             
