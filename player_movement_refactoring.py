@@ -282,10 +282,18 @@ class Player(pg.sprite.Sprite):
         # Other draw logic...
 
     # Other methods...
+
+    def set_position_helper(self, playerrect, x, y):
+        playerrect = (x, y)
+
+    def set_position_pistol(self, x, y):
+        self.set_position_helper(self.player_rect_pistol, x, y)
+
     def set_position(self, x, y):
-        self.player_rect.topleft = (x, y)
+        self.set_position_helper(self.player_rect, x, y)
 
 
+    
     def player_update(self, screen):
         self.player_update_helper(self.main_player_movement, screen)
 
@@ -295,8 +303,8 @@ class Player(pg.sprite.Sprite):
     def player_update_helper(self, movement_function, screen):
         self.allow_movement = True
         movement_function()
-        self.animate()
         self.draw(screen)
+        self.animate()
 
 
 
@@ -475,6 +483,8 @@ class Player(pg.sprite.Sprite):
                 self.is_player_image = True
 
 
+
+
     def draw_health_bar(self, screen, x, y):        
 
         bar_width = 100
@@ -523,12 +533,6 @@ class Player(pg.sprite.Sprite):
                 self.last_moved = "death_2"
                 self.last_image = True
             
-    def reset(self, x, y):
-        self.set_position( x, y)
-        self.player_rect.topleft = (x, y)
-        self.health = 100
-
-
 
     def is_facing_monster(self, monster_rect):
         dx = monster_rect.center[0] - self.player_rect_pistol.centerx

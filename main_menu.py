@@ -1,11 +1,9 @@
 import pygame as pg 
 import sys
-from SaveLoadManager import SaveLoadSystem
-
 import json
 
 def load_game():
-    with open('save_game.json', 'r') as file:
+    with open('saves/save_game.json', 'r') as file:
         game_state = json.load(file)
     
     return game_state
@@ -13,7 +11,7 @@ def load_game():
 pg.init()
 
 def load_game_new():
-    with open('new_game.json', 'r') as file:
+    with open('saves/new_game.json', 'r') as file:
         game_state = json.load(file)
     
     return game_state

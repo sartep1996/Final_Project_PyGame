@@ -75,6 +75,13 @@ class Monster1(pg.sprite.Sprite):
         self.direction = 1
         self.direction_y = 0
 
+
+    def reset_states(self):
+        self.should_follow_player = False
+        self.patrol_mode = True
+        self.monster_is_attacking = False
+        self.should_reset_patrol = False
+
     def set_position(self, x, y):
         self.monster_rect.topleft = (x, y)
 

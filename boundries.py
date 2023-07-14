@@ -15,3 +15,18 @@ def boundries(object):
         object.top = BOUNDRY_TOP 
     if object.bottom > BOUNDRY_BOTTOM:
        object.bottom = BOUNDRY_BOTTOM
+
+
+
+def boundries_lvl_1(object):
+    if object.left < BOUNDRY_LEFT:
+        object.left = BOUNDRY_LEFT
+    if object.right > BOUNDRY_RIGHT:
+        object.right = BOUNDRY_RIGHT 
+    if object.top < BOUNDRY_TOP  and object.left < SCREEN_WIDTH - 300:
+        object.top = BOUNDRY_TOP 
+    if object.bottom > BOUNDRY_BOTTOM:
+       object.bottom = BOUNDRY_BOTTOM
+
+
+
