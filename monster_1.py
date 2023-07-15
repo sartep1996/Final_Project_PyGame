@@ -1,6 +1,9 @@
 import pygame as pg
 import time
 from boundries import BOUNDRY_RIGHT, BOUNDRY_LEFT, BOUNDRY_BOTTOM, BOUNDRY_TOP
+import random
+from threading import Timer
+
 
 CLOSE_DISTANCE_THRESHOLD = 140
 
@@ -51,15 +54,19 @@ class Monster1(pg.sprite.Sprite):
         self.animation_delay = 150
         self.movement_speed = 2
         self.last_moved = ''
+        self.directionne = ''
+
         self.last_frame_time = time.time()
         self.should_follow_player = False
         self.patrol_mode = True
+        self.wandering_mode = True
         self.monster_is_attacking = False
         self.attack_damage = 0
         self.should_reset_patrol = False
         self.max_health = 100
         self.monster_health = self.max_health
         self.death_position = pg.Rect(*position, self.monster_rect.width, self.monster_rect.height)
+        current_time = pg.time.get_ticks()
                 
         self.last_image = False
         self.frame_index = 0
@@ -73,7 +80,7 @@ class Monster1(pg.sprite.Sprite):
         self.y = y
         self.speed = speed
         self.direction = 1
-        self.direction_y = 0
+        self.direction_y = 1
 
 
     def reset_states(self):
@@ -86,16 +93,10 @@ class Monster1(pg.sprite.Sprite):
         self.monster_rect.topleft = (x, y)
 
 
-    def monster_update(self, player_rect, screen):
 
-        
-        # self.should_reset_patrol = True
-        
-        # if self.should_reset_patrol:
-        #     self.patrol_mode = True 
-        
-        self.monster_patrol_left_right()
-        
+    def monster_update(self, player_rect, screen, movement_function):
+        movement_function()
+
         if self.should_follow_player:
             self.monster_follow_player(player_rect)
         self.monster_animate_when_following(player_rect)
@@ -115,6 +116,12 @@ class Monster1(pg.sprite.Sprite):
         if self.monster_health == 0:
             self.draw_monster_death_animation()
             return
+
+    def monster_update_patrol(self, player_rect, screen):
+        self.monster_update(player_rect, screen, self.monster_patrol_left_right)
+
+    def monster_update_wandering(self, player_rect, screen):
+        self.monster_update(player_rect, screen, self.monster_wandering)
     '''
     def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
     '''
@@ -126,8 +133,6 @@ class Monster1(pg.sprite.Sprite):
             self.x += self.movement_speed * self.direction
             self.monster_rect.x = self.x 
         
-        
-    
         if self.direction == -1:
             self.last_moved = BOUNDRY_LEFT
         elif self.direction == 1:
@@ -140,7 +145,88 @@ class Monster1(pg.sprite.Sprite):
         elif self.monster_rect.left < BOUNDRY_LEFT:
             self.x = BOUNDRY_LEFT 
             self.direction = 1
-        
+
+
+ 
+
+                # if random_direction == "x":
+                #     self.direction = random.choice([-1, 1])
+                #     self.direction_y = 0
+                # elif random_direction == "y":
+                #     self.direction = 0
+                #     self.direction_y = random.choice([-1, 1])
+
+                # self.x += self.movement_speed * self.direction
+                # self.y += self.movement_speed * self.direction_y
+                # self.monster_rect.x = self.x
+                # self.monster_rect.y = self.y
+
+                # if self.direction == -1:
+                #     self.last_moved = self.monster_image_left_1
+                # elif self.direction == 1:
+                #     self.last_moved = self.monster_image_right_1
+
+                # if self.direction_y == 1:
+                #     self.last_moved = self.monster_image_down_1
+                # elif self.direction_y == -1:
+                #     self.last_moved = self.monster_image_up_1
+   
+    def monster_wandering(self):
+        if self.wandering_mode:
+            current_time = pg.time.get_ticks()
+            elapsed_time = current_time - self.last_frame_time
+
+            if elapsed_time >= 4000:
+                self.last_frame_time = current_time
+                self.dir = random.choice([self.direction, self.direction_y])
+                self.side = random.choice([1, -1])
+                
+                if self.dir == self.direction and self.side == 1:
+                    self.x += self.movement_speed * self.direction
+                    self.monster_rect.x = self.x
+                    self.last_moved = self.monster_image_right_1 
+
+                elif self.dir == self.direction and self.side == -1:
+                    self.x -= self.movement_speed * self.direction
+                    self.monster_rect.x = self.x 
+
+                if self.dir == self.direction_y and self.side == 1:
+                    self.y += self.movement_speed * self.direction_y
+                    self.monster_rect.y = self.y
+
+                elif self.dir == self.direction_y and self.side == -1:
+                    self.y -= self.movement_speed * self.direction_y
+                    self.monster_rect.y = self.y
+
+            
+
+    # def monster_wandering(self):
+              
+    #         self.timer = time.time()
+    #         if self.timer == 0:
+    #             self.get_new_direction_and_distance()
+
+    #         self.monster_rect.center += self.movement_speed
+    #         self.monster_rect.centerx = self.position.x
+
+    #         self.monster_rect.centery = self.position.y
+
+    #         self.monster_rect.center = self.monster_rect.center
+    #         self.position = (self.monster_rect.centerx, self.monster_rect.centery)
+
+    #         self.steps -= 1
+
+    #         if self.steps == 0:
+    #             self.get_new_direction_and_distance()
+
+    def get_new_direction_and_distance(self):
+        self.direction_list = [(1,1), (1,-1), (-1,1), (-1,-1)]
+        self.direction_index = random.randint(0, len(self.direction_list)-1)
+        self.timer = random.randint(5, 10)
+
+
+
+
     def draw_monster(self, screen):
         if self.last_moved == BOUNDRY_LEFT or self.last_moved == self.monster_image_right_still:
             if self.direction != 0 and not self.is_monster_image:
@@ -236,6 +322,7 @@ class Monster1(pg.sprite.Sprite):
         if self.monster_rect.colliderect(player_rect):
             self.should_follow_player = True
             self.patrol_mode = False
+            self.wandering_mode = False
 
             dx = player_rect.center[0] - self.monster_rect.center[0]
             dy = player_rect.center[1] - self.monster_rect.center[1]
@@ -428,6 +515,7 @@ class Monster1(pg.sprite.Sprite):
     def draw_monster_death_animation(self):
         self.monster_is_attacking = False
         self.patrol_mode = True
+        self.wandering_mode = True
         self.is_monster_image = False
         self.should_follow_player = False
         death_duration = 400
@@ -449,14 +537,6 @@ class Monster1(pg.sprite.Sprite):
                 self.last_image = True
         
         # self.monster_rect = self.death_position
-
-    
-    def reset(self, player_rect, screen, x, y):
-        self.set_position(x, y)
-        self.should_reset_patrol = True
-        self.patrol_mode = True
-        self.monster_update(player_rect, screen)
-
 
 
 monster_image_path_raw_down = 'Images/Monster_1_sprites/monster_down_still.png'
@@ -487,3 +567,4 @@ monster_image_death_path_final = 'Images/Monster_1_sprites/monster_death_final.p
 
 
 monster1 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, (50, 50))
+monster2 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, (50, 50))
