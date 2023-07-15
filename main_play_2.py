@@ -3,14 +3,15 @@ from pause import pause
 import json
 
 
-def save_game(playerx, playery, monsterx,  monstery, monster2x, monster2y, health, monster_health, monster_health2):
+def save_game(playerx, playery, monsterx,  monstery, monster2x, monster2y, health, monster_health, monster_health2, pistol_taken):
     game_state = {
         'player_position': (playerx, playery),
         'monster_position': (monsterx, monstery),
         'monster_2_position':(monster2x, monster2y),
         'player_health': health,
         'monster_health': monster_health,
-        'monster_health2': monster_health2
+        'monster_health2': monster_health2,
+        'pistol_taken': pistol_taken
 
     }
 
@@ -69,7 +70,7 @@ def main_game_lvl_2(game_state):
 
     save_icon = pg.transform.scale(pg.image.load('Images/save_icon/save_icon.png').convert_alpha(), (50, 50))
     save_icon_rect = save_icon.get_rect()
-    save_icon_rect.topleft = (400, 450)
+    save_icon_rect.topleft = (550, 450)
 
     pistol_icon = pg.transform.scale(pg.image.load('Images/gun_sprites/pistol_image.png').convert_alpha(), (50, 50))
     pistol_icon_rect = pistol_icon.get_rect()
@@ -84,11 +85,16 @@ def main_game_lvl_2(game_state):
 
     save_icon_visible = True
     pistol_icon_visible = True
+    pistol_taken = game_state['pistol_taken']
+
+    if pistol_taken == True:
+        player_condition = player.player_rect_pistol
+        pistol_icon_visible = False
+    
 
     run = True
     while run:
         clock.tick(60)
-
 
 
         for event in pg.event.get():
@@ -109,8 +115,9 @@ def main_game_lvl_2(game_state):
                     print(monster3.monster_rect.x, monster3.monster_rect.y )
 
             if player_condition.colliderect(save_icon_rect):
-                save_game(player_condition.centerx,  player_condition.centery, monster2.monster_rect.x, monster2.monster_rect.y, monster3.monster_rect.x, monster3.monster_rect.y, player.health, monster2.monster_health, monster3.monster_health)
+                save_game(player_condition.centerx,  player_condition.centery, monster2.monster_rect.x, monster2.monster_rect.y, monster3.monster_rect.x, monster3.monster_rect.y, player.health, monster2.monster_health, monster3.monster_health, pistol_taken)
                 save_icon_visible = False
+                save_icon_rect.topleft = (-100, -100)
 
             # player.player_rect.x, player.player_rect.y = player.player_rect_pistol.x, player.player_rect_pistol.y
             if player.player_rect.colliderect(pistol_icon_rect):
@@ -119,6 +126,7 @@ def main_game_lvl_2(game_state):
                     player.player_rect_pistol.x, player.player_rect_pistol.y = player.player_rect.x, player.player_rect.y
                     pistol_icon_rect.topleft = (-100, -100)
                     pistol_icon_visible = False
+                    pistol_taken = True
                 else:
                     player_condition = player.player_rect
                     pistol_icon_visible = True
@@ -199,9 +207,9 @@ def main_game_lvl_2(game_state):
 
         
 
-        if player.player_rect_pistol.colliderect(pass_mark_rect):
-            from main_play_2 import main_game_lvl_2
-            main_game_lvl_2()
+        # if player.player_rect_pistol.colliderect(pass_mark_rect):
+        #     from main_play_2 import main_game_lvl_2
+        #     main_game_lvl_2()
 
         pg.display.update()
 

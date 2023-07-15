@@ -3,19 +3,19 @@ from pause import pause
 import json
 
 
-def save_game(playerx, playery, monsterx,  monstery, health, monster_health):
-    game_state = {
-        'player_position': (playerx, playery),
-        'monster_position': (monsterx, monstery),
-        'player_health': health,
-        'monster_health': monster_health
-    }
+# def save_game(playerx, playery, monsterx,  monstery, health, monster_health):
+#     game_state = {
+#         'player_position': (playerx, playery),
+#         'monster_position': (monsterx, monstery),
+#         'player_health': health,
+#         'monster_health': monster_health
+#     }
 
-    with open('saves/save_game.json', 'w') as file:
-        json.dump(game_state, file)
-        # player.player_update(screen)
+#     with open('saves/save_game.json', 'w') as file:
+#         json.dump(game_state, file)
+#         # player.player_update(screen)
 
-def main_game_lvl_1(game_state):
+def main_game_lvl_1(game_state= None):
 
     
 
@@ -42,19 +42,21 @@ def main_game_lvl_1(game_state):
     player_condition = player.player_rect
     player.player_rect.x, player.player_rect.y = player.player_rect_pistol.x, player.player_rect_pistol.y
 
-    player_position = game_state['player_position']
-    player_condition.centerx = player_position[0]
-    player_condition.centery = player_position[1]
+    # player_position = game_state['player_position']
+    # player_condition.centerx = player_position[0]
+    # player_condition.centery = player_position[1]
+    player_condition.centerx, player_condition.centery = 500, 400
    
-    monster_position = game_state['monster_position']
-    monster1.monster_rect.x = monster_position[0]
-    monster1.monster_rect.y = monster_position[1]
+    # monster_position = game_state['monster_position']
+    # monster1.monster_rect.x = monster_position[0]
+    # monster1.monster_rect.y = monster_position[1]
+    monster1.monster_rect.x, monster1.monster_rect.y = 100, 200
         
-    player_health = game_state['player_health']
-    monster_health = game_state['monster_health']
+    # player_health = game_state['player_health']
+    # monster_health = game_state['monster_health']
 
-    player.health = player_health
-    monster1.monster_health = monster_health
+    player.health = player.health
+    monster1.monster_health = monster1.monster_health
 
     screen_rect = screen.get_rect()
     plane_b_object_rect = plane_b_object.get_rect()
@@ -100,23 +102,8 @@ def main_game_lvl_1(game_state):
                     pistol_shot_wav.play()
                     print(monster1.monster_rect.x, monster1.monster_rect.y )
 
-            # if player_condition.colliderect(save_icon_rect):
-            #     save_game(player_condition.centerx,  player_condition.centery, monster1.monster_rect.x, monster1.monster_rect.y, player.health, monster1.monster_health)
-            #     save_icon_visible = False
-
-            # # player.player_rect.x, player.player_rect.y = player.player_rect_pistol.x, player.player_rect_pistol.y
-            # if player.player_rect.colliderect(pistol_icon_rect):
-            #     if player_condition == player.player_rect:
-            #         player_condition = player.player_rect_pistol
-            #         player.player_rect_pistol.x, player.player_rect_pistol.y = player.player_rect.x, player.player_rect.y
-
-            #         pistol_icon_visible = False
-            #     else:
-            #         player_condition = player.player_rect
-            #         pistol_icon_visible = True
 
 
-        
         if monster1.monster_attack_player(player_condition , screen):
             damage = monster1.monster_attack_player(player_condition, screen)
             if damage > 0:
@@ -176,14 +163,10 @@ def main_game_lvl_1(game_state):
         
         player.draw(screen)
 
-        # keys = pg.key.get_pressed()
-        # if keys[pg.K_SPACE] and player_condition == player.player_rect_pistol:
-        #     delta_time = clock.tick(60)
-        #     player.draw_flash(screen, delta_time)
-
         player.draw_health_bar(screen, 10, 10)
 
-        with open('saves/save_game.json', 'r') as file:
+
+        with open('saves/new_lvl2.json', 'r') as file:
             game_state = json.load(file)
 
         if player_condition.colliderect(pass_mark_rect):
@@ -198,11 +181,11 @@ def main_game_lvl_1(game_state):
 
 if __name__ == "__main__":
 
-    def load_game():
-        with open('saves/new_game.json', 'r') as file:
-            game_state = json.load(file)
+    # def load_game():
+    #     with open('saves/new_game.json', 'r') as file:
+    #         game_state = json.load(file)
         
-        return game_state
+    #     return game_state
 
-    game_state = load_game()
-    main_game_lvl_1(game_state)
+    # game_state = load_game()
+    main_game_lvl_1(game_state= None)

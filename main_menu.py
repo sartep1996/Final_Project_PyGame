@@ -72,7 +72,7 @@ def main_menu():
             if event.type == pg.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     game_state = load_game_new()
-                    main_game_lvl_1(game_state)
+                    main_game_lvl_1()
 
                 if LOAD_BUTTON.checkForInput(MENU_MOUSE_POS):
                     game_state = load_game()
