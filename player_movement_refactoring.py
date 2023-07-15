@@ -267,6 +267,9 @@ class Player(pg.sprite.Sprite):
         self.pistol_images = {}
 
         # Load and scale the images
+
+    
+
         for key, data in image_data.items():
             if data['frames'] == 1:
                 self.images[key] = load_and_scale_images(data['path'], 1, data['size'])[0]

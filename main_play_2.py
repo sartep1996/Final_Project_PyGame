@@ -3,12 +3,15 @@ from pause import pause
 import json
 
 
-def save_game(playerx, playery, monsterx,  monstery, health, monster_health):
+def save_game(playerx, playery, monsterx,  monstery, monster2x, monster2y, health, monster_health, monster_health2):
     game_state = {
         'player_position': (playerx, playery),
         'monster_position': (monsterx, monstery),
+        'monster_2_position':(monster2x, monster2y),
         'player_health': health,
-        'monster_health': monster_health
+        'monster_health': monster_health,
+        'monster_health2': monster_health2
+
     }
 
     with open('saves/save_game.json', 'w') as file:
@@ -34,7 +37,7 @@ def main_game_lvl_2(game_state):
 
 
     from player_movement_refactoring import player, pistol_shot_wav
-    from monster_1 import monster1
+    from monster_1 import monster2, monster3
     from global_functions import collision_with_static_object, collision_with_moving_object
     from boundries import boundries_lvl_1, boundries
 
@@ -45,16 +48,22 @@ def main_game_lvl_2(game_state):
     player_condition.centery = player_position[1]
    
     monster_position = game_state['monster_position']
-    monster1.monster_rect.x = monster_position[0]
-    monster1.monster_rect.y = monster_position[1]
+    monster2.monster_rect.centerx = monster_position[0]
+    monster2.monster_rect.centery = monster_position[1]
+
+    monster_position3 = game_state['monster_2_position']
+    monster3.monster_rect.centerx = monster_position3[0]
+    monster3.monster_rect.centery = monster_position3[1]
         
     player_health = game_state['player_health']
-    monster_health = game_state['monster_health']
+    monster2_health = game_state['monster_health']
+    monster3_health = game_state['monster_health2']
 
     # player.set_position_pistol(player.player_rect_pistol.x, player.player_rect_pistol.y)
     # monster1.set_position(monsterx, monstery)
     player.health = player_health
-    monster1.monster_health = monster_health
+    monster2.monster_health = monster2_health
+    monster3.monster_health = monster3_health
 
     screen_rect = screen.get_rect()
 
@@ -96,10 +105,11 @@ def main_game_lvl_2(game_state):
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE and player_condition == player.player_rect_pistol:
                     pistol_shot_wav.play()
-                    print(monster1.monster_rect.x, monster1.monster_rect.y )
+                    print(monster2.monster_rect.x, monster2.monster_rect.y )
+                    print(monster3.monster_rect.x, monster3.monster_rect.y )
 
             if player_condition.colliderect(save_icon_rect):
-                save_game(player_condition.centerx,  player_condition.centery, monster1.monster_rect.x, monster1.monster_rect.y, player.health, monster1.monster_health)
+                save_game(player_condition.centerx,  player_condition.centery, monster2.monster_rect.x, monster2.monster_rect.y, monster3.monster_rect.x, monster3.monster_rect.y, player.health, monster2.monster_health, monster3.monster_health)
                 save_icon_visible = False
 
             # player.player_rect.x, player.player_rect.y = player.player_rect_pistol.x, player.player_rect_pistol.y
@@ -107,7 +117,7 @@ def main_game_lvl_2(game_state):
                 if player_condition == player.player_rect:
                     player_condition = player.player_rect_pistol
                     player.player_rect_pistol.x, player.player_rect_pistol.y = player.player_rect.x, player.player_rect.y
-
+                    pistol_icon_rect.topleft = (-100, -100)
                     pistol_icon_visible = False
                 else:
                     player_condition = player.player_rect
@@ -115,39 +125,48 @@ def main_game_lvl_2(game_state):
 
 
         
-        if monster1.monster_attack_player(player_condition , screen):
-            damage = monster1.monster_attack_player(player_condition, screen)
+        monsters = [monster2, monster3]  
+
+        for monster in monsters:
+            damage = monster.monster_attack_player(player_condition, screen)
             if damage > 0:
                 player.take_damage(damage)
         
+        
 
-        keys = pg.key.get_pressed()
-        if keys[pg.K_SPACE]:
-            if player.is_facing_monster(monster1.monster_rect):
-                damage = player.damage()
-                if damage > 0:
-                    monster1.take_damage(damage)
+        for monster in monsters:
+            keys = pg.key.get_pressed()
+            if keys[pg.K_SPACE]:
+                if player.is_facing_monster(monster.monster_rect):
+                    damage = player.damage()
+                    if damage > 0:
+                            monster.take_damage(damage)
 
 
-        monster1.monster_update_patrol(player_condition, screen)
+        monster2.monster_update_patrol(player_condition, screen)
+        monster3.monster_update_patrol(player_condition, screen)
 
         player.main_player_movement_pistol()
         player.player_update(screen)
 
 
         boundries_lvl_1(player_condition)
-        boundries(monster1.monster_rect)
 
-        collision_with_moving_object(player_condition, monster1.monster_rect, 10, player.movement_speed, monster1.movement_speed,  screen_rect)
+        for monster in monsters:
+            boundries(monster.monster_rect)
+
+        for monster in monsters:
+         collision_with_moving_object(player_condition, monster.monster_rect, 10, player.movement_speed, monster.movement_speed,  screen_rect)
         
         screen.fill((0, 0, 0))
         screen.blit(background_lvl_2, (0,0))
         
-        monster1.draw_monster(screen)
-        monster1.draw_health_bar(screen, 690, 10)
+        for monster in monsters:
+            monster.draw_monster(screen)
 
-        pg.draw.rect(screen, (10, 0, 50, 0), pass_mark_rect)
+        pg.draw.rect(screen, (0, 0, 0, 0), pass_mark_rect)
 
+        
         if save_icon_visible:
             screen.blit(save_icon, save_icon_rect.topleft)
        
@@ -158,11 +177,12 @@ def main_game_lvl_2(game_state):
         if player.health == 0:
             player.draw_player_death_animation()
 
-        # if monster1.monster_health == 0:
-        #     monster1.should_follow_player = False
-        #     monster1.patrol_mode = False
-        #     monster1.monster_is_attacking = False
-        #     monster1.draw_monster_death_animation()
+        for monster in monsters:
+            if monster.monster_health == 0:
+                monster.should_follow_player = False
+                monster.patrol_mode = False
+                monster.monster_is_attacking = False
+                monster.draw_monster_death_animation()
             
 
         if player_condition == player.player_rect_pistol:
@@ -177,9 +197,11 @@ def main_game_lvl_2(game_state):
 
         player.draw_health_bar(screen, 10, 10)
 
-        # if player.player_rect_pistol.colliderect(pass_mark_rect):
-        #     from main_play_2 import main_game_lvl_2
-        #     main_game_lvl_2()
+        
+
+        if player.player_rect_pistol.colliderect(pass_mark_rect):
+            from main_play_2 import main_game_lvl_2
+            main_game_lvl_2()
 
         pg.display.update()
 

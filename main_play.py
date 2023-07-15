@@ -15,7 +15,7 @@ def save_game(playerx, playery, monsterx,  monstery, health, monster_health):
         json.dump(game_state, file)
         # player.player_update(screen)
 
-def main_game_lvl_1():
+def main_game_lvl_1(game_state):
 
     
 
@@ -183,6 +183,9 @@ def main_game_lvl_1():
 
         player.draw_health_bar(screen, 10, 10)
 
+        with open('saves/save_game.json', 'r') as file:
+            game_state = json.load(file)
+
         if player_condition.colliderect(pass_mark_rect):
             from main_play_2 import main_game_lvl_2
             main_game_lvl_2(game_state)
@@ -196,10 +199,10 @@ def main_game_lvl_1():
 if __name__ == "__main__":
 
     def load_game():
-        with open('saves/save_game.json', 'r') as file:
+        with open('saves/new_game.json', 'r') as file:
             game_state = json.load(file)
         
         return game_state
 
     game_state = load_game()
-    main_game_lvl_1()
+    main_game_lvl_1(game_state)

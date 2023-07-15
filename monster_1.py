@@ -3,12 +3,28 @@ import time
 from boundries import BOUNDRY_RIGHT, BOUNDRY_LEFT, BOUNDRY_BOTTOM, BOUNDRY_TOP
 import random
 from threading import Timer
+from functools import wraps
 
 
 CLOSE_DISTANCE_THRESHOLD = 140
 
+def change_xy(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        self.direction_y = self.direction
+        self.y = self.x
+
+        result = func(self, *args, **kwargs)
+
+        delattr(self, 'direction_y')
+        delattr(self, 'y')
+
+        return result
+    
+    return wrapper
+
 class Monster1(pg.sprite.Sprite):
-    def __init__(self, x, y, speed, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, position  ):
+    def __init__(self, x, y, speed, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, position):
         super().__init__()
         self.monster_image_still = pg.transform.scale(pg.image.load(monster_image_path_raw_down).convert_alpha(), (100, 100))
 
@@ -82,20 +98,14 @@ class Monster1(pg.sprite.Sprite):
         self.direction = 1
         self.direction_y = 1
 
-
-    def reset_states(self):
-        self.should_follow_player = False
-        self.patrol_mode = True
-        self.monster_is_attacking = False
-        self.should_reset_patrol = False
-
     def set_position(self, x, y):
         self.monster_rect.topleft = (x, y)
 
 
 
     def monster_update(self, player_rect, screen, movement_function):
-        movement_function()
+        
+        movement_function(self)
 
         if self.should_follow_player:
             self.monster_follow_player(player_rect)
@@ -120,15 +130,17 @@ class Monster1(pg.sprite.Sprite):
     def monster_update_patrol(self, player_rect, screen):
         self.monster_update(player_rect, screen, self.monster_patrol_left_right)
 
+    def monster_update_patrol_inverted(self, player_rect, screen):
+        self.monster_update(player_rect, screen, change_xy(self.monster_patrol_left_right.__func__))
+
     def monster_update_wandering(self, player_rect, screen):
         self.monster_update(player_rect, screen, self.monster_wandering)
     '''
     def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
     '''
-    
 
-    def monster_patrol_left_right(self):
-        
+    
+    def monster_patrol_left_right(self, *args, **kwargs):
         if self.patrol_mode:
             self.x += self.movement_speed * self.direction
             self.monster_rect.x = self.x 
@@ -138,13 +150,15 @@ class Monster1(pg.sprite.Sprite):
         elif self.direction == 1:
             self.last_moved = BOUNDRY_RIGHT
         
-
         if self.monster_rect.right > BOUNDRY_RIGHT:
-            self.x = BOUNDRY_RIGHT -self.monster_rect.width
+            self.x = BOUNDRY_RIGHT - self.monster_rect.width
             self.direction = -1
         elif self.monster_rect.left < BOUNDRY_LEFT:
             self.x = BOUNDRY_LEFT 
             self.direction = 1
+
+
+ 
 
 
  
@@ -189,14 +203,17 @@ class Monster1(pg.sprite.Sprite):
                 elif self.dir == self.direction and self.side == -1:
                     self.x -= self.movement_speed * self.direction
                     self.monster_rect.x = self.x 
+                    self.last_moved = self.monster_image_left_1
 
                 if self.dir == self.direction_y and self.side == 1:
                     self.y += self.movement_speed * self.direction_y
                     self.monster_rect.y = self.y
+                    self.last_moved = self.monster_image_up_1
 
                 elif self.dir == self.direction_y and self.side == -1:
                     self.y -= self.movement_speed * self.direction_y
                     self.monster_rect.y = self.y
+                    self.last_moved = self.monster_image_down_1
 
             
 
@@ -518,6 +535,7 @@ class Monster1(pg.sprite.Sprite):
         self.wandering_mode = True
         self.is_monster_image = False
         self.should_follow_player = False
+        
         death_duration = 400
         self.movement_speed = 0
         animation_time = pg.time.get_ticks() % (3 * death_duration)
@@ -568,3 +586,4 @@ monster_image_death_path_final = 'Images/Monster_1_sprites/monster_death_final.p
 
 monster1 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, (50, 50))
 monster2 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, (50, 50))
+monster3 = Monster1(5, 5, 5, monster_image_down_path_1, monster_image_down_path_2, monster_image_path_raw_down, monster_image_up_path_1, monster_image_up_path_2, monster_image_path_raw_up, monster_image_left_path_1, monster_image_left_path_2, monster_image_path_raw_left, monster_image_right_path_1, monster_image_right_path_2, monster_image_path_raw_right, monster_image_down_path_attack, monster_image_up_path_attack, monster_image_left_path_attack, monster_image_right_path_attack, monster_image_death_path_1, monster_image_death_path_2, monster_image_death_path_final, (150, 150))

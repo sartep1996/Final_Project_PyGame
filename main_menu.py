@@ -34,6 +34,7 @@ def get_font(size): # Returns Press-Start-2P in the desired size
 
 def main_menu():
     from main_play import main_game_lvl_1
+    from main_play_2 import main_game_lvl_2
     while True:
         SCREEN.blit(BACKGROUNG, (0, 0))
 
@@ -75,7 +76,7 @@ def main_menu():
 
                 if LOAD_BUTTON.checkForInput(MENU_MOUSE_POS):
                     game_state = load_game()
-                    main_game_lvl_1(game_state)
+                    main_game_lvl_2(game_state)
 
             
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
