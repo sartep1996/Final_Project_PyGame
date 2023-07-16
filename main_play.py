@@ -1,6 +1,9 @@
 import pygame as pg
 from pause import pause
 import json
+import pyglet
+
+
 
 
 def main_game_lvl_1(game_state= None):
@@ -21,11 +24,22 @@ def main_game_lvl_1(game_state= None):
     background_lvl_1 = pg.transform.scale(original_background_lvl_1, (800, 600))
 
 
+
+    video_file = "loading_video.mp4"  # Replace with the actual path to your video file
+    video = pyglet.media.load(video_file)
+    player = pyglet.media.Player()
+    player.queue(video)
+    player.play()
+    show_video = True
+    video_finished = False
+
+
     from player_movement_refactoring import player, pistol_shot_wav
     from monster_1 import monster1
     from background_objects import plane_b_object
     from global_functions import collision_with_static_object, collision_with_moving_object
     from boundries import boundries_lvl_1, boundries
+    
 
     player_condition = player.player_rect
     player.player_rect.x, player.player_rect.y = player.player_rect_pistol.x, player.player_rect_pistol.y
@@ -69,6 +83,18 @@ def main_game_lvl_1(game_state= None):
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 run = False
+
+        if player.source and player.time >= player.source.duration:
+            player.seek(0.0)  # Restart the video when it ends
+            video_finished = True
+
+        if show_video:
+            # Video is playing, clear the screen and draw the video frame
+            screen.fill((0, 0, 0))
+            if player.playing:
+                player.get_texture().blit(0, 0)
+        else:
+            
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_p:
                     paused = True
@@ -153,7 +179,11 @@ def main_game_lvl_1(game_state= None):
             from main_play_2 import main_game_lvl_2
             main_game_lvl_2(game_state)
 
+            
+
         pg.display.update()
+        if video_finished:
+            show_video = False
 
 
         

@@ -60,15 +60,11 @@ def main_game_lvl_2(game_state):
     monster2.monster_rect.topleft = (monster_position[0], monster_position[1])
     monster3.monster_rect.topleft = (monster_position3[0], monster_position3[1])
             
-    player_health = game_state['player_health']
-    monster2_health = game_state['monster_health']
-    monster3_health = game_state['monster_health2']
-
+    player.health = game_state['player_health']
+    monster2.monster_health = game_state['monster_health']
+    monster3.monster_health = game_state['monster_health2']
     # player.set_position_pistol(player.player_rect_pistol.x, player.player_rect_pistol.y)
     # monster1.set_position(monsterx, monstery)
-    player.health = player_health
-    monster2.monster_health = monster2_health
-    monster3.monster_health = monster3_health
 
     screen_rect = screen.get_rect()
 
@@ -182,8 +178,6 @@ def main_game_lvl_2(game_state):
         for monster in monsters:
             monster.draw_monster(screen)
 
-
-        
         if save_icon_visible:
             screen.blit(save_icon, save_icon_rect.topleft)
        
