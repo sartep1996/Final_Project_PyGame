@@ -134,6 +134,7 @@ def main_game_lvl_1(game_state= None):
 
         
         
+        pg.draw.rect(screen, (10, 0, 50, 0), pass_mark_rect)
         screen.fill((0, 0, 0))
         screen.blit(background_lvl_1, (0,0))
         
@@ -141,7 +142,6 @@ def main_game_lvl_1(game_state= None):
         monster1.draw_monster(screen)
         monster1.draw_health_bar(screen, 690, 10)
 
-        pg.draw.rect(screen, (10, 0, 50, 0), pass_mark_rect)
 
         if save_icon_visible:
             screen.blit(save_icon, save_icon_rect.topleft)

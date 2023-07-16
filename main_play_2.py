@@ -19,6 +19,8 @@ def save_game(playerx, playery, monsterx,  monstery, monster2x, monster2y, healt
         json.dump(game_state, file)
         # player.player_update(screen)
 
+    
+
 def main_game_lvl_2(game_state):
 
     
@@ -40,22 +42,24 @@ def main_game_lvl_2(game_state):
     from player_movement_refactoring import player, pistol_shot_wav
     from monster_1 import monster2, monster3
     from global_functions import collision_with_static_object, collision_with_moving_object
-    from boundries import boundries_lvl_1, boundries
+    from boundries import boundries_lvl_2, boundries
 
-    player_condition = player.player_rect
+    pistol_taken = game_state['pistol_taken']
+
+    if pistol_taken:
+        player_condition = player.player_rect_pistol
+    else:
+        player_condition = player.player_rect
 
     player_position = game_state['player_position']
     player_condition.centerx = player_position[0]
     player_condition.centery = player_position[1]
    
     monster_position = game_state['monster_position']
-    monster2.monster_rect.centerx = monster_position[0]
-    monster2.monster_rect.centery = monster_position[1]
-
     monster_position3 = game_state['monster_2_position']
-    monster3.monster_rect.centerx = monster_position3[0]
-    monster3.monster_rect.centery = monster_position3[1]
-        
+    monster2.monster_rect.topleft = (monster_position[0], monster_position[1])
+    monster3.monster_rect.topleft = (monster_position3[0], monster_position3[1])
+            
     player_health = game_state['player_health']
     monster2_health = game_state['monster_health']
     monster3_health = game_state['monster_health2']
@@ -76,13 +80,14 @@ def main_game_lvl_2(game_state):
     pistol_icon_rect = pistol_icon.get_rect()
     pistol_icon_rect.topleft = (500, 100)
 
-    pass_mark_rect = pg.Rect((570, -20, 170, 60))
+    pass_mark_rect = pg.Rect((500, -20, 170, 60))
+    block_rect = pg.Rect(620, -20, 170, 60)
 
     global paused
     paused = False
 
     
-
+    
     save_icon_visible = True
     pistol_icon_visible = True
     pistol_taken = game_state['pistol_taken']
@@ -158,7 +163,9 @@ def main_game_lvl_2(game_state):
         player.player_update(screen)
 
 
-        boundries_lvl_1(player_condition)
+        boundries_lvl_2(player_condition)
+
+        collision_with_static_object(player_condition, block_rect, 10)
 
         for monster in monsters:
             boundries(monster.monster_rect)
@@ -166,13 +173,13 @@ def main_game_lvl_2(game_state):
         for monster in monsters:
          collision_with_moving_object(player_condition, monster.monster_rect, 10, player.movement_speed, monster.movement_speed,  screen_rect)
         
-        screen.fill((0, 0, 0))
+        pg.draw.rect(screen, (0, 0, 0, 0), pass_mark_rect)
         screen.blit(background_lvl_2, (0,0))
+        pg.draw.rect(screen, (0, 0, 0, 0), block_rect)
         
         for monster in monsters:
             monster.draw_monster(screen)
 
-        pg.draw.rect(screen, (0, 0, 0, 0), pass_mark_rect)
 
         
         if save_icon_visible:
@@ -191,6 +198,8 @@ def main_game_lvl_2(game_state):
                 monster.patrol_mode = False
                 monster.monster_is_attacking = False
                 monster.draw_monster_death_animation()
+
+
             
 
         if player_condition == player.player_rect_pistol:
