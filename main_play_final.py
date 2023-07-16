@@ -5,7 +5,7 @@ import json
 
     
 
-def main_game_lvl_2(game_state):
+def main_game_lvl_final(game_state):
 
     
 
@@ -41,10 +41,6 @@ def main_game_lvl_2(game_state):
     player_health = game_state['player_health']
     player.health = player_health
   
-
-
-    pass_mark_rect = pg.Rect((570, -20, 170, 60))
-
     side_rect_left = pg.Rect((0, 400, 25, 200))
 
     side_rect_right = pg.Rect((775, 400, 25, 200))
@@ -53,16 +49,10 @@ def main_game_lvl_2(game_state):
     global paused
     paused = False
 
-    
-    
-    save_icon_visible = True
-    pistol_icon_visible = True
     pistol_taken = game_state['pistol_taken']
 
     if pistol_taken == True:
-        player_condition = player.player_rect_pistol
-        pistol_icon_visible = False
-    
+        player_condition = player.player_rect_pistol    
 
     run = True
     while run:
@@ -104,7 +94,6 @@ def main_game_lvl_2(game_state):
         screen.fill((0, 0, 0))
         screen.blit(background_lvl_2, (0,0))
 
-        pg.draw.rect(screen, (0, 0, 0, 0), pass_mark_rect)
 
 
         if player.health == 0:
@@ -146,4 +135,4 @@ if __name__ == "__main__":
         return game_state
 
     game_state = load_game()
-    main_game_lvl_2(game_state)
+    main_game_lvl_final(game_state)

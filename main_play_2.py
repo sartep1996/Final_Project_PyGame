@@ -86,7 +86,9 @@ def main_game_lvl_2(game_state):
     global paused
     paused = False
 
-    
+    monster2.should_follow_player = False
+    monster3.should_follow_player = False
+
     
     save_icon_visible = True
     pistol_icon_visible = True
@@ -173,9 +175,9 @@ def main_game_lvl_2(game_state):
         for monster in monsters:
          collision_with_moving_object(player_condition, monster.monster_rect, 10, player.movement_speed, monster.movement_speed,  screen_rect)
         
+        pg.draw.rect(screen, (0, 0, 0, 0), block_rect)
         pg.draw.rect(screen, (0, 0, 0, 0), pass_mark_rect)
         screen.blit(background_lvl_2, (0,0))
-        pg.draw.rect(screen, (0, 0, 0, 0), block_rect)
         
         for monster in monsters:
             monster.draw_monster(screen)
@@ -199,13 +201,15 @@ def main_game_lvl_2(game_state):
                 monster.monster_is_attacking = False
                 monster.draw_monster_death_animation()
 
-
-            
-
         if player_condition == player.player_rect_pistol:
             player.draw_pistol_player(screen)
         else:
             player.draw(screen)
+
+
+        if player_condition.colliderect(pass_mark_rect):
+            from main_play_final import main_game_lvl_final
+            main_game_lvl_final(game_state)    
 
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE] and player_condition == player.player_rect_pistol:
@@ -213,6 +217,8 @@ def main_game_lvl_2(game_state):
             player.draw_flash(screen, delta_time)
 
         player.draw_health_bar(screen, 10, 10)
+
+        
 
         
 

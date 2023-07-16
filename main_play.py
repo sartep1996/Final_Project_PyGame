@@ -3,18 +3,6 @@ from pause import pause
 import json
 
 
-# def save_game(playerx, playery, monsterx,  monstery, health, monster_health):
-#     game_state = {
-#         'player_position': (playerx, playery),
-#         'monster_position': (monsterx, monstery),
-#         'player_health': health,
-#         'monster_health': monster_health
-#     }
-
-#     with open('saves/save_game.json', 'w') as file:
-#         json.dump(game_state, file)
-#         # player.player_update(screen)
-
 def main_game_lvl_1(game_state= None):
 
     
@@ -42,18 +30,10 @@ def main_game_lvl_1(game_state= None):
     player_condition = player.player_rect
     player.player_rect.x, player.player_rect.y = player.player_rect_pistol.x, player.player_rect_pistol.y
 
-    # player_position = game_state['player_position']
-    # player_condition.centerx = player_position[0]
-    # player_condition.centery = player_position[1]
     player_condition.centerx, player_condition.centery = 500, 400
    
-    # monster_position = game_state['monster_position']
-    # monster1.monster_rect.x = monster_position[0]
-    # monster1.monster_rect.y = monster_position[1]
     monster1.monster_rect.x, monster1.monster_rect.y = 100, 200
-        
-    # player_health = game_state['player_health']
-    # monster_health = game_state['monster_health']
+
 
     player.health = player.health
     monster1.monster_health = monster1.monster_health
@@ -75,7 +55,7 @@ def main_game_lvl_1(game_state= None):
     global paused
     paused = False
 
-    
+    monster1.should_follow_player = False
 
     save_icon_visible = False
     pistol_icon_visible = False
