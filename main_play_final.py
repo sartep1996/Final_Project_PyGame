@@ -45,6 +45,10 @@ def main_game_lvl_final(game_state):
 
     side_rect_right = pg.Rect((775, 400, 25, 200))
 
+    ship = pg.transform.scale(pg.image.load("Images/Background_objects/ship.png"), (250, 250))
+    ship_rect = ship.get_rect()
+    ship_rect.topleft = (400, 50)
+
  
     global paused
     paused = False
@@ -80,6 +84,7 @@ def main_game_lvl_final(game_state):
 
         collision_with_static_object(player_condition, side_rect_left, 10)
         collision_with_static_object(player_condition, side_rect_right, 10)
+        collision_with_static_object(player_condition, ship_rect, 10 )
 
         
         player.main_player_movement_pistol()
@@ -93,6 +98,8 @@ def main_game_lvl_final(game_state):
 
         screen.fill((0, 0, 0))
         screen.blit(background_lvl_2, (0,0))
+        screen.blit(ship, ship_rect)
+        
 
 
 
