@@ -25,13 +25,13 @@ def main_game_lvl_1(game_state= None):
 
 
 
-    video_file = "loading_video.mp4"  # Replace with the actual path to your video file
-    video = pyglet.media.load(video_file)
-    player = pyglet.media.Player()
-    player.queue(video)
-    player.play()
-    show_video = True
-    video_finished = False
+    # video_file = "loading_video.avi"  
+    # video = pyglet.media.load(video_file)
+    # player = pyglet.media.Player()
+    # player.queue(video)
+    # player.play()
+    # show_video = True
+    # video_finished = False
 
 
     from player_movement_refactoring import player, pistol_shot_wav
@@ -78,22 +78,18 @@ def main_game_lvl_1(game_state= None):
     while run:
         clock.tick(60)
 
-
-
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 run = False
 
-        if player.source and player.time >= player.source.duration:
-            player.seek(0.0)  # Restart the video when it ends
-            video_finished = True
-
-        if show_video:
-            # Video is playing, clear the screen and draw the video frame
-            screen.fill((0, 0, 0))
-            if player.playing:
-                player.get_texture().blit(0, 0)
-        else:
+        # if player.source and player.time >= player.source.duration:
+        #     player.seek(0.0)  
+        #     video_finished = True
+        # if show_video:
+        #     screen.fill((0, 0, 0))
+        #     if player.playing:
+        #         player.get_texture().blit(0, 0)
+        # else:
             
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_p:
@@ -179,23 +175,11 @@ def main_game_lvl_1(game_state= None):
             from main_play_2 import main_game_lvl_2
             main_game_lvl_2(game_state)
 
-            
-
         pg.display.update()
-        if video_finished:
-            show_video = False
 
 
         
     pg.quit()
 
 if __name__ == "__main__":
-
-    # def load_game():
-    #     with open('saves/new_game.json', 'r') as file:
-    #         game_state = json.load(file)
-        
-    #     return game_state
-
-    # game_state = load_game()
     main_game_lvl_1(game_state= None)
