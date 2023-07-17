@@ -62,9 +62,8 @@ class Monster1(pg.sprite.Sprite):
         self.monster_image_death_final = pg.transform.scale(pg.image.load(monster_image_death_path_final).convert_alpha(), (100, 100))
 
         
-        # The rest of the charackteristics
         self.monster_rect = self.monster_image_still.get_rect()
-        self.monster_rect.topleft = position #sets initial position
+        self.monster_rect.topleft = position 
         self.is_monster_image = True
         self.animation_timer = 0
         self.animation_delay = 150
@@ -73,6 +72,7 @@ class Monster1(pg.sprite.Sprite):
         self.directionne = ''
 
         self.last_frame_time = time.time()
+        self.wandering_time = time.time() - 4
         self.should_follow_player = False
         self.patrol_mode = True
         self.wandering_mode = True
@@ -82,15 +82,9 @@ class Monster1(pg.sprite.Sprite):
         self.max_health = 100
         self.monster_health = self.max_health
         self.death_position = pg.Rect(*position, self.monster_rect.width, self.monster_rect.height)
-        current_time = pg.time.get_ticks()
                 
         self.last_image = False
         self.frame_index = 0
-
-
-        
-        # self.check_collision = True
-
 
         self.x = x
         self.y = y
@@ -103,9 +97,8 @@ class Monster1(pg.sprite.Sprite):
 
 
 
-    def monster_update(self, player_rect, screen, movement_function):
-        
-        movement_function(self)
+    def monster_update(self, player_rect, screen):
+
 
         if self.should_follow_player:
             self.monster_follow_player(player_rect)
@@ -128,13 +121,16 @@ class Monster1(pg.sprite.Sprite):
             return
 
     def monster_update_patrol(self, player_rect, screen):
-        self.monster_update(player_rect, screen, self.monster_patrol_left_right)
+        self.monster_patrol_left_right()
+        self.monster_update(player_rect, screen)
 
     def monster_update_patrol_inverted(self, player_rect, screen):
-        self.monster_update(player_rect, screen, change_xy(self.monster_patrol_left_right.__func__))
+        change_xy(self.monster_patrol_left_right.__func__)
+        self.monster_update(player_rect, screen)
 
     def monster_update_wandering(self, player_rect, screen):
-        self.monster_update(player_rect, screen, self.monster_wandering)
+        self.monster_wandering()
+        self.monster_update(player_rect, screen)
     '''
     def monster_update is main function that is responsible for updating monster, it has all the other functions, responsible for monster behaviour
     '''
@@ -157,84 +153,102 @@ class Monster1(pg.sprite.Sprite):
             self.x = BOUNDRY_LEFT 
             self.direction = 1
 
-
- 
-
-
- 
-
-                # if random_direction == "x":
-                #     self.direction = random.choice([-1, 1])
-                #     self.direction_y = 0
-                # elif random_direction == "y":
-                #     self.direction = 0
-                #     self.direction_y = random.choice([-1, 1])
-
-                # self.x += self.movement_speed * self.direction
-                # self.y += self.movement_speed * self.direction_y
-                # self.monster_rect.x = self.x
-                # self.monster_rect.y = self.y
-
-                # if self.direction == -1:
-                #     self.last_moved = self.monster_image_left_1
-                # elif self.direction == 1:
-                #     self.last_moved = self.monster_image_right_1
-
-                # if self.direction_y == 1:
-                #     self.last_moved = self.monster_image_down_1
-                # elif self.direction_y == -1:
-                #     self.last_moved = self.monster_image_up_1
-   
     def monster_wandering(self):
         if self.wandering_mode:
-            current_time = pg.time.get_ticks()
-            elapsed_time = current_time - self.last_frame_time
+            current_time = time.time()
+            elapsed_time = current_time - self.wandering_time
 
-            if elapsed_time >= 4000:
-                self.last_frame_time = current_time
-                self.dir = random.choice([self.direction, self.direction_y])
-                self.side = random.choice([1, -1])
+            if elapsed_time >= 4:
+                self.wandering_time = current_time
+                self.randomize_direction()
+
+            self.move_monster()
+
+    def randomize_direction(self):
+        self.direction = random.choice([-1, 1])
+
+    def move_monster(self):
+        if self.direction == -1:
+            self.monster_rect.x -= self.movement_speed
+            self.last_moved = self.monster_image_left_1
+
+        elif self.direction == 1:
+            self.monster_rect.x += self.movement_speed
+            self.last_moved = self.monster_image_right_1
+
+
+
+
+
+
+    # def monster_wandering(self):
+    #     if self.wandering_mode:
+    #         current_time = time.time()
+            
+    #         elapsed_time = current_time - self.wandering_time
+
+    #         if elapsed_time >= 4:
+    #             self.wandering_time = current_time
+    #             self.dir = random.choice([-1, 1])
+    #             self.side = random.choice([-1, 1])
                 
-                if self.dir == self.direction and self.side == 1:
-                    self.x += self.movement_speed * self.direction
-                    self.monster_rect.x = self.x
-                    self.last_moved = self.monster_image_right_1 
+    #             if self.dir == 1:
+    #                 self.x += self.movement_speed * self.side
+    #                 self.monster_rect.x = self.x
+    #                 self.last_moved = self.monster_image_right_1 
 
-                elif self.dir == self.direction and self.side == -1:
-                    self.x -= self.movement_speed * self.direction
-                    self.monster_rect.x = self.x 
-                    self.last_moved = self.monster_image_left_1
+    #             elif self.dir == -1:
+    #                 self.x -= self.movement_speed * self.side
+    #                 self.monster_rect.x = self.x 
+    #                 self.last_moved = self.monster_image_left_1
 
-                if self.dir == self.direction_y and self.side == 1:
-                    self.y += self.movement_speed * self.direction_y
-                    self.monster_rect.y = self.y
-                    self.last_moved = self.monster_image_up_1
+    #             if self.dir == 1:
+    #                 self.y += self.movement_speed * self.side
+    #                 self.monster_rect.y = self.y
+    #                 self.last_moved = self.monster_image_up_1
 
-                elif self.dir == self.direction_y and self.side == -1:
-                    self.y -= self.movement_speed * self.direction_y
-                    self.monster_rect.y = self.y
-                    self.last_moved = self.monster_image_down_1
+    #             elif self.dir == -1:
+    #                 self.y -= self.movement_speed * self.side
+    #                 self.monster_rect.y = self.y
+    #                 self.last_moved = self.monster_image_down_1
+
+    #             print(self.dir, self.side, self.x, self.y, self.last_moved)
+
+
+                
 
             
 
     # def monster_wandering(self):
-              
-    #         self.timer = time.time()
-    #         if self.timer == 0:
-    #             self.get_new_direction_and_distance()
+    #     if self.wandering_mode:
+    #         current_time = time.time()
+    #         elapsed_time = current_time - self.wandering_time
 
-    #         self.monster_rect.center += self.movement_speed
-    #         self.monster_rect.centerx = self.position.x
+    #         if elapsed_time >= 4:
+    #             self.wandering_time = current_time
+    #             self.dir_x = random.choice([-1, 1])
+    #             self.dir_y = random.choice([-1, 1])
+    #             self.side_x = random.choice([-1, 1])
+    #             self.side_y = random.choice([-1, 1])
 
-    #         self.monster_rect.centery = self.position.y
+    #             if self.dir_x == 1:
+    #                 self.monster_rect.x += self.movement_speed * self.side_x
+    #                 self.last_moved = self.monster_image_right_1
+    #             else:
+    #                 self.monster_rect.x -= self.movement_speed * self.side_x
+    #                 self.last_moved = self.monster_image_left_1
 
-    #         self.monster_rect.center = self.monster_rect.center
-    #         self.position = (self.monster_rect.centerx, self.monster_rect.centery)
+    #             if self.dir_y == 1:
+    #                 self.monster_rect.y += self.movement_speed * self.side_y
+    #                 self.last_moved = self.monster_image_up_1
+    #             else:
+    #                 self.monster_rect.y -= self.movement_speed * self.side_y
+    #                 self.last_moved = self.monster_image_down_1
 
-    #         self.steps -= 1
+    #             print(self.dir_x, self.side_x, self.dir_y, self.side_y, self.monster_rect.x, self.monster_rect.y, self.last_moved)
 
-    #         if self.steps == 0:
-    #             self.get_new_direction_and_distance()
+
+
 
     def get_new_direction_and_distance(self):
         self.direction_list = [(1,1), (1,-1), (-1,1), (-1,-1)]
@@ -531,7 +545,7 @@ class Monster1(pg.sprite.Sprite):
 
     def draw_monster_death_animation(self):
         self.monster_is_attacking = False
-        self.patrol_mode = True
+        self.patrol_mode = False
         self.wandering_mode = True
         self.is_monster_image = False
         self.should_follow_player = False
