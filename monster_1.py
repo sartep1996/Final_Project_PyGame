@@ -138,8 +138,7 @@ class Monster1(pg.sprite.Sprite):
     
     def monster_patrol_left_right(self, *args, **kwargs):
         if self.patrol_mode:
-            self.x += self.movement_speed * self.direction
-            self.monster_rect.x = self.x 
+            self.monster_rect.x += self.movement_speed * self.direction
         
         if self.direction == -1:
             self.last_moved = BOUNDRY_LEFT
@@ -171,32 +170,33 @@ class Monster1(pg.sprite.Sprite):
         if self.direction == -1:
             self.monster_rect.x -= self.movement_speed
             self.last_moved = BOUNDRY_LEFT
+            if self.monster_rect.left < BOUNDRY_LEFT:
+                self.x = BOUNDRY_LEFT 
+                self.direction = 1
 
         elif self.direction == 1:
             self.monster_rect.x += self.movement_speed
             self.last_moved = BOUNDRY_RIGHT
+            if self.monster_rect.right > BOUNDRY_RIGHT:
+                self.x = BOUNDRY_RIGHT 
+                self.direction = -1
 
         elif self.direction == -2:
             self.monster_rect.y -= self.movement_speed
             self.last_moved = BOUNDRY_TOP
+            if self.monster_rect.top > BOUNDRY_TOP:
+                self.x = BOUNDRY_RIGHT 
+                self.direction = -2
 
         elif self.direction == 2:
             self.monster_rect.y += self.movement_speed
             self.last_moved = BOUNDRY_BOTTOM
+            if self.monster_rect.bottom < BOUNDRY_BOTTOM:
+                self.x = BOUNDRY_LEFT 
+                self.direction = 2
 
-        # if self.monster_rect.right > BOUNDRY_RIGHT:
-        #     self.x = BOUNDRY_RIGHT 
-        #     self.direction = -1
-        # elif self.monster_rect.left < BOUNDRY_LEFT:
-        #     self.x = BOUNDRY_LEFT 
-        #     self.direction = 1
-        # elif self.monster_rect.top > BOUNDRY_TOP:
-        #     self.x = BOUNDRY_RIGHT 
-        #     self.direction = -2
-        # elif self.monster_rect.bottom < BOUNDRY_BOTTOM:
-        #     self.x = BOUNDRY_LEFT 
-        #     self.direction = 2
-        
+      
+
 
 
 
