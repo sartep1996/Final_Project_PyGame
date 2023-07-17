@@ -122,7 +122,7 @@ def main_game_lvl_1(game_state= None):
                         monster1.take_damage(damage)
 
 
-        monster1.monster_update_patrol(player_condition, screen)
+        monster1.monster_update_wandering(player_condition, screen)
 
         player.main_player_movement_pistol()
         player.player_update(screen)

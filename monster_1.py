@@ -1,6 +1,6 @@
 import pygame as pg
 import time
-from boundries import BOUNDRY_RIGHT, BOUNDRY_LEFT, BOUNDRY_BOTTOM, BOUNDRY_TOP
+from boundaries_for_animation import BOUNDRY_RIGHT, BOUNDRY_LEFT, BOUNDRY_BOTTOM, BOUNDRY_TOP
 import random
 from threading import Timer
 from functools import wraps
@@ -158,23 +158,46 @@ class Monster1(pg.sprite.Sprite):
             current_time = time.time()
             elapsed_time = current_time - self.wandering_time
 
-            if elapsed_time >= 4:
+            if elapsed_time >= 3:
                 self.wandering_time = current_time
                 self.randomize_direction()
 
             self.move_monster()
 
     def randomize_direction(self):
-        self.direction = random.choice([-1, 1])
+        self.direction = random.choice([-1, 1, -2, 2])
 
     def move_monster(self):
         if self.direction == -1:
             self.monster_rect.x -= self.movement_speed
-            self.last_moved = self.monster_image_left_1
+            self.last_moved = BOUNDRY_LEFT
 
         elif self.direction == 1:
             self.monster_rect.x += self.movement_speed
-            self.last_moved = self.monster_image_right_1
+            self.last_moved = BOUNDRY_RIGHT
+
+        elif self.direction == -2:
+            self.monster_rect.y -= self.movement_speed
+            self.last_moved = BOUNDRY_TOP
+
+        elif self.direction == 2:
+            self.monster_rect.y += self.movement_speed
+            self.last_moved = BOUNDRY_BOTTOM
+
+        # if self.monster_rect.right > BOUNDRY_RIGHT:
+        #     self.x = BOUNDRY_RIGHT 
+        #     self.direction = -1
+        # elif self.monster_rect.left < BOUNDRY_LEFT:
+        #     self.x = BOUNDRY_LEFT 
+        #     self.direction = 1
+        # elif self.monster_rect.top > BOUNDRY_TOP:
+        #     self.x = BOUNDRY_RIGHT 
+        #     self.direction = -2
+        # elif self.monster_rect.bottom < BOUNDRY_BOTTOM:
+        #     self.x = BOUNDRY_LEFT 
+        #     self.direction = 2
+        
+
 
 
 

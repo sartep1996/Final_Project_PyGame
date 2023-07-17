@@ -6,6 +6,8 @@ BOUNDRY_TOP = 25
 BOUNDRY_RIGHT = SCREEN_WIDTH - 25
 BOUNDRY_BOTTOM = SCREEN_HEIGHT - 25
 
+
+
 def boundries(object):
     if object.left < BOUNDRY_LEFT:
         object.left = BOUNDRY_LEFT
