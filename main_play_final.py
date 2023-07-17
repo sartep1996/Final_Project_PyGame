@@ -1,6 +1,7 @@
 import pygame as pg
 from pause import pause
 import json
+from cutscene import run_cutscene
 
 
     
@@ -99,15 +100,17 @@ def main_game_lvl_final(game_state):
         screen.fill((0, 0, 0))
         screen.blit(background_lvl_2, (0,0))
         screen.blit(ship, ship_rect)
-        
 
+        # if player_condition.colliderect(ship_rect):
+        #     run_cutscene(player_condition, ship_rect, screen)
+        
+        if ship_rect.colliderect(player_condition):
+            run_cutscene(screen)
 
 
         if player.health == 0:
             player.draw_player_death_animation()
 
-
-            
 
         if player_condition == player.player_rect_pistol:
             player.draw_pistol_player(screen)
@@ -123,9 +126,6 @@ def main_game_lvl_final(game_state):
 
         
 
-        # if player.player_rect_pistol.colliderect(pass_mark_rect):
-        #     from main_play_2 import main_game_lvl_2
-        #     main_game_lvl_2()
 
         pg.display.update()
 
