@@ -114,6 +114,7 @@ def main_game_lvl_1(game_state= None):
 
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE]:
+            print(monster1.monster_rect.x, monster1.monster_rect.y)
             if player_condition == player.player_rect_pistol:
                 if player.is_facing_monster(monster1.monster_rect):
                     damage = player.damage()
@@ -121,7 +122,7 @@ def main_game_lvl_1(game_state= None):
                         monster1.take_damage(damage)
 
 
-        monster1.monster_update_patrol(player_condition, screen)
+        monster1.monster_update_wandering(player_condition, screen)
 
         player.main_player_movement_pistol()
         player.player_update(screen)
