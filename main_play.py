@@ -1,29 +1,28 @@
 import pygame as pg
-from pause import pause
+from add_screens.pause import pause
+from add_screens.death_screen import death_screen
 import json
-import pyglet
 
+pg.mixer.init()
 
+main_song = pg.mixer.Sound('Sounds/main_song.wav')
+main_song.set_volume(0.5)
 
 
 def main_game_lvl_1(game_state= None):
-
-    
 
     pg.init()
     pg.mixer.init()
     clock = pg.time.Clock()
 
+    main_song.play()
+
     SCREEN_WIDTH = 800
     SCREEN_HEIGHT = 600
 
     screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-    #background imagesd
     original_background_lvl_1 = pg.image.load('Images/Background/bg_lvl_1.png')
     background_lvl_1 = pg.transform.scale(original_background_lvl_1, (800, 600))
-
-
 
     # video_file = "loading_video.avi"  
     # video = pyglet.media.load(video_file)
@@ -33,13 +32,11 @@ def main_game_lvl_1(game_state= None):
     # show_video = True
     # video_finished = False
 
-
-    from player_movement_refactoring import player, pistol_shot_wav
-    from monster_1 import monster1
-    from background_objects import plane_b_object
-    from global_functions import collision_with_static_object, collision_with_moving_object
-    from boundries import boundries_lvl_1, boundries
-    
+    from player.player_movement_refactoring import player, pistol_shot_wav
+    from monster.monster_1 import monster1, monster2, monster3
+    from global_stuff.background_objects import plane_b_object
+    from global_stuff.global_functions import collision_with_static_object, collision_with_moving_object
+    from global_stuff.boundries import boundries_lvl_1, boundries    
 
     player_condition = player.player_rect
     player.player_rect.x, player.player_rect.y = player.player_rect_pistol.x, player.player_rect_pistol.y
@@ -47,7 +44,6 @@ def main_game_lvl_1(game_state= None):
     player_condition.centerx, player_condition.centery = 500, 400
    
     monster1.monster_rect.x, monster1.monster_rect.y = 100, 200
-
 
     player.health = player.health
     monster1.monster_health = monster1.monster_health
@@ -70,9 +66,15 @@ def main_game_lvl_1(game_state= None):
     paused = False
 
     monster1.should_follow_player = False
+    monster1.wandering_mode = True
+    player.health = 200
+    player.movement_speed = 9
+    player.is_player_image = True
+    player.last_moved = "down_still"
 
     save_icon_visible = False
     pistol_icon_visible = False
+
 
     run = True
     while run:
@@ -104,29 +106,15 @@ def main_game_lvl_1(game_state= None):
                     pistol_shot_wav.play()
                     print(monster1.monster_rect.x, monster1.monster_rect.y )
 
-
-
         if monster1.monster_attack_player(player_condition , screen):
             damage = monster1.monster_attack_player(player_condition, screen)
             if damage > 0:
                 player.take_damage(damage)
-        
-
-        keys = pg.key.get_pressed()
-        if keys[pg.K_SPACE]:
-            print(monster1.monster_rect.x, monster1.monster_rect.y)
-            if player_condition == player.player_rect_pistol:
-                if player.is_facing_monster(monster1.monster_rect):
-                    damage = player.damage()
-                    if damage > 0:
-                        monster1.take_damage(damage)
-
-
+    
         monster1.monster_update_wandering(player_condition, screen)
 
         player.main_player_movement_pistol()
         player.player_update(screen)
-
 
         boundries_lvl_1(player_condition)
         boundries(monster1.monster_rect)
@@ -135,8 +123,6 @@ def main_game_lvl_1(game_state= None):
         collision_with_static_object(monster1.monster_rect, plane_b_object_rect, 10)
         collision_with_moving_object(player_condition, monster1.monster_rect, 10, player.movement_speed, monster1.movement_speed,  screen_rect)
 
-        
-        
         pg.draw.rect(screen, (10, 0, 50, 0), pass_mark_rect)
         screen.fill((0, 0, 0))
         screen.blit(background_lvl_1, (0,0))
@@ -145,41 +131,36 @@ def main_game_lvl_1(game_state= None):
         monster1.draw_monster(screen)
         monster1.draw_health_bar(screen, 690, 10)
 
-
         if save_icon_visible:
             screen.blit(save_icon, save_icon_rect.topleft)
-       
         if pistol_icon_visible:
             screen.blit(pistol_icon, pistol_icon_rect.topleft)
         
-        
         if player.health == 0:
             player.draw_player_death_animation()
+            main_song.stop()
+            death_screen(screen)
 
-        # if monster1.monster_health == 0:
-        #     monster1.should_follow_player = False
-        #     monster1.patrol_mode = False
-        #     monster1.monster_is_attacking = False
-        #     monster1.draw_monster_death_animation()
-            
+        if monster1.monster_health == 0:
+            monster1.should_follow_player = False
+            monster1.patrol_mode = False
+            monster1.monster_is_attacking = False
+            monster1.draw_monster_death_animation()
 
-        
         player.draw(screen)
 
         player.draw_health_bar(screen, 10, 10)
-
 
         with open('saves/new_lvl2.json', 'r') as file:
             game_state = json.load(file)
 
         if player_condition.colliderect(pass_mark_rect):
+            main_song.stop()
             from main_play_2 import main_game_lvl_2
             main_game_lvl_2(game_state)
 
         pg.display.update()
 
-
-        
     pg.quit()
 
 if __name__ == "__main__":

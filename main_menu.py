@@ -1,6 +1,11 @@
 import pygame as pg 
 import sys
 import json
+
+pg.mixer.init()
+menu_song = pg.mixer.Sound('Sounds/song_menu.wav')
+menu_song.set_volume(0.5)
+
 pg.init()
 
 def load_game():
@@ -21,18 +26,17 @@ pg.display.set_caption("MENU")
 
 BACKGROUNG = pg.image.load('Images/Background/menu_background.png')
 
-from button import Button
+from global_stuff.button import Button
 
 
 def get_font(size): # Returns Press-Start-2P in the desired size
     return pg.font.Font('assets/fonts/Rhuma Sinera Regular.ttf', size)
 
-    
-
-
-
-
 def main_menu():
+
+    menu_song.play()
+
+
     from main_play import main_game_lvl_1
     from main_play_2 import main_game_lvl_2
     while True:
@@ -72,10 +76,12 @@ def main_menu():
             if event.type == pg.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     game_state = load_game_new()
+                    menu_song.stop()
                     main_game_lvl_1()
 
                 if LOAD_BUTTON.checkForInput(MENU_MOUSE_POS):
                     game_state = load_game()
+                    menu_song.stop()
                     main_game_lvl_2(game_state)
 
             
@@ -84,9 +90,6 @@ def main_menu():
                     sys.exit()
 
         pg.display.update()
-        
-     
-
 
 if __name__ == "__main__":
     main_menu()

@@ -1,1 +1,1 @@
-{"player_position": [100, 480], "monster_position": [100, 100], "monster_2_position": [100, 270], "player_health": 100, "monster_health": 100, "monster_health2": 100, "pistol_taken": false}
+{"player_position": [100, 480], "monster_position": [100, 100], "monster_2_position": [100, 270], "player_health": 200, "monster_health": 100, "monster_health2": 100, "pistol_taken": false, "patrol_mode": true}

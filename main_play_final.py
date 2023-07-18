@@ -1,15 +1,17 @@
 import pygame as pg
-from pause import pause
+from add_screens.pause import pause
 import json
 from cutscene import run_cutscene
 
+pg.mixer.init()
 
-    
+main_song = pg.mixer.Sound('Sounds/gta_pass theme.wav')
+main_song.set_volume(0.5)
+
 
 def main_game_lvl_final(game_state):
 
     
-
     pg.init()
     pg.mixer.init()
     clock = pg.time.Clock()
@@ -23,13 +25,12 @@ def main_game_lvl_final(game_state):
     screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     background_lvl_2 = pg.transform.scale(pg.image.load('Images/Background/bg_lvl_final.png'), (800, 600))
 
+    from player.player_movement_refactoring import player, pistol_shot_wav
+    from monster.monster_1 import monster2, monster3
+    from global_stuff.global_functions import collision_with_static_object, collision_with_moving_object
+    from global_stuff.boundries import boundries_lvl_final, boundries
 
-    from player_movement_refactoring import player, pistol_shot_wav
-    from monster_1 import monster2, monster3
-    from global_functions import collision_with_static_object, collision_with_moving_object
-    from boundries import boundries_lvl_final, boundries
-
-    pistol_taken = game_state['pistol_taken']
+    pistol_taken = True
 
     if pistol_taken:
         player_condition = player.player_rect_pistol
@@ -38,7 +39,6 @@ def main_game_lvl_final(game_state):
 
     player_condition.topleft = (100, 500)
    
-            
     player_health = game_state['player_health']
     player.health = player_health
   
@@ -50,7 +50,6 @@ def main_game_lvl_final(game_state):
     ship_rect = ship.get_rect()
     ship_rect.topleft = (400, 50)
 
- 
     global paused
     paused = False
 
@@ -62,7 +61,6 @@ def main_game_lvl_final(game_state):
     run = True
     while run:
         clock.tick(60)
-
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -81,17 +79,13 @@ def main_game_lvl_final(game_state):
                     print(monster2.monster_rect.x, monster2.monster_rect.y )
                     print(monster3.monster_rect.x, monster3.monster_rect.y )
 
-
-
         collision_with_static_object(player_condition, side_rect_left, 10)
         collision_with_static_object(player_condition, side_rect_right, 10)
         collision_with_static_object(player_condition, ship_rect, 10 )
-
         
         player.main_player_movement_pistol()
         player.player_update(screen)
 
-        
         boundries_lvl_final(player_condition)
 
         pg.draw.rect(screen, (0, 0, 0, 0), side_rect_right)
@@ -100,17 +94,13 @@ def main_game_lvl_final(game_state):
         screen.fill((0, 0, 0))
         screen.blit(background_lvl_2, (0,0))
         screen.blit(ship, ship_rect)
-
-        # if player_condition.colliderect(ship_rect):
-        #     run_cutscene(player_condition, ship_rect, screen)
         
         if ship_rect.colliderect(player_condition):
+            main_song.play()
             run_cutscene(screen)
-
 
         if player.health == 0:
             player.draw_player_death_animation()
-
 
         if player_condition == player.player_rect_pistol:
             player.draw_pistol_player(screen)
@@ -124,13 +114,8 @@ def main_game_lvl_final(game_state):
 
         player.draw_health_bar(screen, 10, 10)
 
-        
-
-
         pg.display.update()
 
-
-        
     pg.quit()
 
 if __name__ == "__main__":
